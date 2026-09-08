@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Passage map prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ground:#D9D7CD;
+  --page:#F3F2EC;
+  --panel:#EAE8E0;
+  --ink:#23221E;
+  --ink-soft:#63615A;
+  --ink-faint:#8E8C83;
+  --rule:#CDCABE;
+  --madder:#9C3627;
+  --madder-wash:#F0E1DC;
+  --indigo:#3A4A85;
+  --indigo-wash:#E2E4EF;
+  --sans:"IBM Plex Sans",system-ui,sans-serif;
+  --serif:"EB Garamond",Georgia,serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background:var(--ground);
+  font-family:var(--sans);
+  color:var(--ink);
+  min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;
+  padding:40px 16px 64px;
+}
+
+.brief{max-width:390px;width:100%;margin-bottom:24px}
+.brief h1{font-family:var(--serif);font-size:30px;font-weight:600;margin:0 0 6px;letter-spacing:-0.01em}
+.brief p{font-size:14px;line-height:1.6;color:var(--ink-soft);margin:0}
+
+.device{
+  width:390px;max-width:100%;height:780px;
+  background:var(--page);
+  border:1px solid var(--rule);
+  border-radius:28px;
+  position:relative;overflow:hidden;
+  box-shadow:0 1px 0 rgba(255,255,255,.6) inset;
+}
+
+.pane{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+  background:var(--page);
+  transition:transform .32s cubic-bezier(.32,.72,0,1);
+  will-change:transform;
+}
+.pane[data-state="off"]{transform:translateX(100%)}
+.pane[data-state="on"]{transform:translateX(0)}
+.pane[data-state="behind"]{transform:translateX(-22%)}
+
+.bar{
+  flex:none;display:flex;align-items:center;gap:10px;
+  padding:18px 20px 12px;
+  border-bottom:1px solid var(--rule);
+}
+.bar-back{
+  border:none;background:none;padding:0;margin:0;cursor:pointer;
+  font-family:var(--sans);font-size:14px;color:var(--madder);
+  display:flex;align-items:center;gap:5px;
+}
+.bar-back svg{display:block}
+.bar-title{font-family:var(--serif);font-size:19px;font-weight:600}
+.bar-note{font-size:12px;color:var(--ink-faint);margin-left:auto}
+
+.scroll{flex:1;overflow-y:auto;overscroll-behavior:contain}
+
+/* ---------- word study ---------- */
+.lemma{padding:24px 20px 20px;border-bottom:1px solid var(--rule)}
+.lemma-gk{font-family:var(--serif);font-size:42px;line-height:1;font-weight:500;margin:0}
+.lemma-tr{font-family:var(--serif);font-style:italic;font-size:17px;color:var(--ink-soft);margin:6px 0 0}
+.lemma-meta{display:flex;gap:18px;margin-top:14px;font-size:12.5px;color:var(--ink-soft)}
+.lemma-meta b{display:block;font-weight:500;font-size:15px;color:var(--ink);font-family:var(--serif)}
+
+.family{display:flex;flex-wrap:wrap;gap:6px;margin-top:16px}
+.family span{
+  font-family:var(--serif);font-size:15px;
+  padding:3px 10px;border:1px solid var(--rule);border-radius:2px;
+  background:var(--panel);
+}
+.family span i{font-style:normal;font-family:var(--sans);font-size:11.5px;color:var(--ink-faint);margin-left:6px}
+
+.sense{padding:20px 20px 4px}
+.sense-h{display:flex;align-items:baseline;gap:8px;margin-bottom:2px}
+.sense-h h3{font-family:var(--serif);font-size:19px;font-weight:600;margin:0}
+.sense-h em{font-style:normal;font-size:12px;color:var(--ink-faint)}
+.sense p{font-size:13px;line-height:1.55;color:var(--ink-soft);margin:0 0 12px;max-width:44ch}
+
+.verse{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:12px 0;border-top:1px solid var(--rule);
+}
+.verse:last-child{border-bottom:1px solid var(--rule)}
+.verse-body{flex:1;min-width:0}
+.verse-ref{font-family:var(--sans);font-size:12.5px;font-weight:500;color:var(--madder);margin:0}
+.verse-txt{font-family:var(--serif);font-size:16.5px;line-height:1.4;margin:2px 0 0}
+.verse-txt mark{background:var(--madder-wash);color:inherit;padding:0 2px}
+.map-btn{
+  flex:none;width:38px;height:38px;margin-top:2px;
+  border:1px solid var(--rule);border-radius:3px;background:var(--panel);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:background .15s,border-color .15s;
+}
+.map-btn:hover{background:var(--madder-wash);border-color:var(--madder)}
+.map-btn:focus-visible{outline:2px solid var(--madder);outline-offset:1px}
+.map-btn svg{display:block;stroke:var(--madder)}
+
+/* ---------- map ---------- */
+.trail{
+  flex:none;display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+  padding:10px 20px;border-bottom:1px solid var(--rule);
+  background:var(--panel);
+}
+.trail button{
+  font-family:var(--sans);font-size:12px;
+  border:1px solid var(--rule);background:var(--page);color:var(--ink-soft);
+  padding:3px 9px;border-radius:2px;cursor:pointer;
+}
+.trail button[aria-current="true"]{border-color:var(--madder);color:var(--madder);background:var(--madder-wash)}
+.trail i{font-style:normal;color:var(--ink-faint);font-size:11px}
+
+.filters{
+  flex:none;display:flex;gap:6px;padding:12px 20px 10px;
+}
+.filters button{
+  display:flex;align-items:center;gap:6px;
+  font-family:var(--sans);font-size:11.5px;
+  border:1px solid var(--rule);background:var(--page);color:var(--ink-soft);
+  padding:5px 9px;border-radius:2px;cursor:pointer;
+}
+.filters button[aria-pressed="false"]{opacity:.42}
+.filters button span{width:14px;height:2px;display:block}
+
+#mapwrap{padding:0 8px}
+#mapsvg text{font-family:var(--serif)}
+.nd{cursor:pointer}
+.nd rect{transition:fill .15s}
+.nd:hover rect{fill:var(--madder-wash)}
+@media (prefers-reduced-motion:no-preference){
+  .enter{animation:pop .42s cubic-bezier(.2,.9,.3,1) backwards}
+  @keyframes pop{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+}
+.legend{padding:2px 20px 24px;font-size:12px;line-height:1.6;color:var(--ink-faint);max-width:42ch}
+
+/* ---------- detail sheet ---------- */
+.scrim{
+  position:absolute;inset:0;background:rgba(35,34,30,.32);
+  opacity:0;pointer-events:none;transition:opacity .25s;
+}
+.scrim[data-open="true"]{opacity:1;pointer-events:auto}
+.sheet{
+  position:absolute;left:0;right:0;bottom:0;max-height:82%;
+  background:var(--page);border-top:1px solid var(--rule);
+  border-radius:18px 18px 0 0;
+  transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1);
+  display:flex;flex-direction:column;
+}
+.sheet[data-open="true"]{transform:translateY(0)}
+.grip{width:34px;height:3px;background:var(--rule);border-radius:2px;margin:9px auto 0;flex:none}
+.sheet-h{padding:14px 20px 12px;border-bottom:1px solid var(--rule);flex:none}
+.sheet-h h2{font-family:var(--serif);font-size:27px;font-weight:500;margin:0}
+.sheet-h p{font-family:var(--serif);font-style:italic;font-size:15px;color:var(--ink-soft);margin:3px 0 0}
+.sheet-body{overflow-y:auto;padding:0 20px 28px}
+
+.block{padding:16px 0;border-bottom:1px solid var(--rule)}
+.block:last-child{border-bottom:none}
+.block-h{display:flex;align-items:center;gap:7px;margin-bottom:9px}
+.block-h b{font-size:12.5px;font-weight:500}
+.tick{width:9px;height:9px;border-radius:50%;flex:none}
+.src .tick{background:var(--madder)}
+.gen .tick{background:var(--indigo)}
+.src .block-h b{color:var(--madder)}
+.gen .block-h b{color:var(--indigo)}
+.block-h em{font-style:normal;font-size:11px;color:var(--ink-faint);margin-left:auto}
+.block p{font-family:var(--serif);font-size:16.5px;line-height:1.52;margin:0 0 9px;max-width:46ch}
+.block p:last-child{margin-bottom:0}
+.gen{background:var(--indigo-wash);margin:0 -20px;padding:16px 20px;border-bottom:none}
+.gen p{color:#2C3563}
+.dl{display:grid;grid-template-columns:auto 1fr;gap:5px 14px;font-size:14px;margin:0}
+.dl dt{color:var(--ink-faint);font-size:12px;padding-top:3px}
+.dl dd{margin:0;font-family:var(--serif);font-size:16px}
+.jump{
+  display:inline-block;margin-top:4px;font-family:var(--sans);font-size:12.5px;
+  border:1px solid var(--madder);color:var(--madder);background:none;
+  padding:6px 12px;border-radius:2px;cursor:pointer;
+}
+.jump:hover{background:var(--madder-wash)}
+
+.caption{max-width:390px;width:100%;margin-top:20px;font-size:13px;line-height:1.65;color:var(--ink-soft)}
+.caption b{font-weight:500;color:var(--ink)}
+</style>
+</head>
+<body>
+
+<div class="brief">
+  <h1>Passage map</h1>
+  <p>A word study that opens into an explorable map. Tap a map button on any verse, then tap the nodes.</p>
+</div>
+
+<div class="device">
+
+  <!-- WORD STUDY -->
+  <section class="pane" id="pane-word" data-state="on">
+    <div class="bar">
+      <div class="bar-title">Word study</div>
+      <div class="bar-note">Greek</div>
+    </div>
+    <div class="scroll">
+      <div class="lemma">
+        <p class="lemma-gk">κοινωνία</p>
+        <p class="lemma-tr">koinōnia</p>
+        <div class="lemma-meta">
+          <div>Strong's<b>G2842</b></div>
+          <div>Uses<b>19</b></div>
+          <div>Books<b>9</b></div>
+        </div>
+        <div class="family">
+          <span>κοινός<i>common</i></span>
+          <span>κοινωνός<i>partner</i></span>
+          <span>κοινωνέω<i>to share</i></span>
+        </div>
+      </div>
+      <div id="senses"></div>
+    </div>
+  </section>
+
+  <!-- MAP -->
+  <section class="pane" id="pane-map" data-state="off">
+    <div class="bar">
+      <button class="bar-back" onclick="closeMap()">
+        <svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M6 1L1 6l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Word study
+      </button>
+      <div class="bar-note" id="map-note"></div>
+    </div>
+    <div class="trail" id="trail"></div>
+    <div class="filters" id="filters"></div>
+    <div class="scroll">
+      <div id="mapwrap"></div>
+      <p class="legend" id="legend"></p>
+    </div>
+    <div class="scrim" id="scrim" data-open="false" onclick="closeSheet()"></div>
+    <div class="sheet" id="sheet" data-open="false" role="dialog" aria-modal="true">
+      <div class="grip"></div>
+      <div class="sheet-h"><h2 id="sheet-title"></h2><p id="sheet-sub"></p></div>
+      <div class="sheet-body" id="sheet-body"></div>
+    </div>
+  </section>
+
+</div>
+
+<p class="caption">
+  <b>Red</b> marks anything retrieved from a lexicon, morphology database, or cross-reference set — checkable, cited, not invented.
+  <b>Blue</b> marks anything the model wrote. The two never share a treatment.
+</p>
+
+<script>
+/* ---------------- data ---------------- */
+
+const SENSES = [
+  {
+    name:"Participation in something",
+    gloss:"9 uses",
+    note:"Sharing in a reality larger than yourself — the body of Christ, the Spirit, suffering. Takes an objective genitive.",
+    verses:[
+      {ref:"1 Corinthians 10:16", txt:"Is not the cup of blessing which we bless a <mark>sharing</mark> in the blood of Christ?"},
+      {ref:"Philippians 3:10", txt:"That I may know him and the <mark>sharing</mark> of his sufferings."},
+      {ref:"2 Corinthians 13:14", txt:"And the <mark>fellowship</mark> of the Holy Spirit be with you all."}
+    ]
+  },
+  {
+    name:"Partnership in a shared work",
+    gloss:"6 uses",
+    note:"A working alliance with obligations attached. Closer to a business partnership than to warm feeling.",
+    verses:[
+      {ref:"Philippians 1:5", txt:"Because of your <mark>partnership</mark> in the gospel from the first day until now."},
+      {ref:"Galatians 2:9", txt:"They gave to me and Barnabas the right hand of <mark>fellowship</mark>."},
+      {ref:"Acts 2:42", txt:"They devoted themselves to the apostles' teaching and the <mark>fellowship</mark>."}
+    ]
+  },
+  {
+    name:"Money given away",
+    gloss:"4 uses",
+    note:"Paul's word for the Jerusalem collection. English 'fellowship' hides this sense almost entirely.",
+    verses:[
+      {ref:"Romans 15:26", txt:"Macedonia and Achaia were pleased to make some <mark>contribution</mark> for the poor."},
+      {ref:"Hebrews 13:16", txt:"Do not neglect to do good and to <mark>share</mark> what you have."}
+    ]
+  }
+];
+
+const EDGE = {
+  lex:{color:"#9C3627", dash:"none",  label:"Same word"},
+  lit:{color:"#3A4A85", dash:"5 3",   label:"Same author"},
+  the:{color:"#6B7A55", dash:"1.5 3", label:"Same theme"}
+};
+
+const MAPS = {
+  "Acts 2:42":{sub:"the four devotions", nodes:[
+    {id:"Luke 24:35",   w:.82, t:"lit", tag:"breaking of bread"},
+    {id:"1 Corinthians 10:16", w:.79, t:"lex", tag:"κοινωνία of bread"},
+    {id:"Acts 4:32",    w:.77, t:"lit", tag:"all things in common"},
+    {id:"Hebrews 10:25",w:.68, t:"the", tag:"meeting together"},
+    {id:"Acts 6:4",     w:.74, t:"lex", tag:"devoted to prayer"},
+    {id:"1 John 1:3",   w:.71, t:"lex", tag:"κοινωνία with us"}
+  ]},
+  "1 Corinthians 10:16":{sub:"cup and bread", nodes:[
+    {id:"1 Corinthians 11:24", w:.86, t:"lit", tag:"this is my body"},
+    {id:"Luke 22:19",   w:.84, t:"the", tag:"he broke it"},
+    {id:"Matthew 26:26",w:.81, t:"the", tag:"took bread, blessed"},
+    {id:"Acts 2:42",    w:.79, t:"lex", tag:"the fellowship"},
+    {id:"1 Corinthians 12:13", w:.70, t:"lit", tag:"one body, one Spirit"},
+    {id:"John 6:53",    w:.66, t:"the", tag:"eat the flesh"}
+  ]},
+  "Luke 24:35":{sub:"known in the breaking", nodes:[
+    {id:"Luke 24:30",   w:.91, t:"lit", tag:"he broke and gave"},
+    {id:"Acts 2:42",    w:.82, t:"lit", tag:"the breaking of bread"},
+    {id:"Luke 22:19",   w:.80, t:"lit", tag:"the last supper"},
+    {id:"Acts 20:11",   w:.75, t:"lit", tag:"Troas, broke bread"},
+    {id:"Acts 27:35",   w:.72, t:"lit", tag:"bread in the storm"},
+    {id:"John 21:13",   w:.67, t:"the", tag:"breakfast by the sea"}
+  ]},
+  "Acts 4:32":{sub:"one heart and soul", nodes:[
+    {id:"Acts 2:44",    w:.93, t:"lit", tag:"all things in common"},
+    {id:"Acts 2:42",    w:.77, t:"lit", tag:"the fellowship"},
+    {id:"2 Corinthians 8:14", w:.71, t:"the", tag:"a fair balance"},
+    {id:"Romans 15:26", w:.69, t:"lex", tag:"the contribution"},
+    {id:"Acts 5:1",     w:.66, t:"lit", tag:"Ananias held back"},
+    {id:"1 Timothy 6:18", w:.63, t:"the", tag:"generous, ready to share"}
+  ]},
+  "Acts 6:4":{sub:"prayer and the word", nodes:[
+    {id:"Acts 1:14",    w:.78, t:"lex", tag:"devoted to prayer"},
+    {id:"Acts 2:42",    w:.74, t:"lex", tag:"they kept devoting"},
+    {id:"Romans 12:12", w:.72, t:"lex", tag:"persevere in prayer"},
+    {id:"Colossians 4:2", w:.70, t:"lex", tag:"continue in prayer"},
+    {id:"Acts 13:2",    w:.65, t:"lit", tag:"worshipping and fasting"},
+    {id:"Ephesians 6:18", w:.62, t:"the", tag:"pray at all times"}
+  ]}
+};
+
+const DETAIL = {
+  "Acts 2:42":{
+    sub:"they kept devoting themselves",
+    src:[
+      {h:"Morphology", src:"MorphGNT", dl:[
+        ["Verb","ἦσαν προσκαρτεροῦντες"],
+        ["Form","periphrastic imperfect"],
+        ["Force","kept on doing, over time"],
+        ["Objects","four, all dative"]
+      ]},
+      {h:"Lexicon", src:"Strong's G4342", p:["προσκαρτερέω: to attend constantly, to persist in. Ten uses in the New Testament, six of them in Acts."]}
+    ],
+    gen:["One verb governs all four items, so this is a single sustained habit described from four angles, not a checklist of four separate programmes. Luke will use the same verb of the apostles in 6:4."]
+  },
+  "1 Corinthians 10:16":{
+    sub:"a sharing in the blood",
+    src:[
+      {h:"Lexicon", src:"Strong's G2842", p:["κοινωνία in the objective genitive: participation in the thing named, not merely association with people who share it."]},
+      {h:"Context", src:"BDAG, Thiselton", p:["Written into a dispute at Corinth about eating meat offered at pagan temples. The argument is that shared eating creates real participation, whichever table you sit at."]}
+    ],
+    gen:["This is the clearest bridge between the two big senses of the word. Participation in Christ and partnership with each other turn out to be the same act, which is why Paul can move straight from the cup to the one loaf and the one body."]
+  },
+  "Luke 24:35":{
+    sub:"known in the breaking of bread",
+    src:[
+      {h:"Lexicon", src:"Strong's G2800", p:["κλάσις, a breaking. Only two uses in the New Testament, both in Luke's writing: here and Acts 2:42."]},
+      {h:"Setting", src:"Second Temple practice", p:["The head of a household opened a meal by taking bread, blessing God, breaking it, and distributing it. The gesture was ordinary and daily."]}
+    ],
+    gen:["Because the noun appears only twice and both are Luke's, the Emmaus meal and the Jerusalem church are probably meant to be read together. Whether either refers to the Lord's Supper as a distinct rite is genuinely contested and the phrase alone will not settle it."]
+  },
+  "Acts 4:32":{
+    sub:"one heart and soul",
+    src:[
+      {h:"Text", src:"NA28", p:["ἅπαντα κοινά, all things common. The adjective is κοινός, the root behind κοινωνία."]},
+      {h:"Parallel", src:"Treasury of Scripture Knowledge", p:["Repeats the formula of Acts 2:44 almost exactly. Luke gives three such summaries: 2:42-47, 4:32-35, 5:12-16."]}
+    ],
+    gen:["The shared root is doing quiet work here. Acts 2:42 names the fellowship, and 4:32 shows what it looked like in practice, so the abstract noun gets defined by a sale of property rather than by a feeling."]
+  },
+  "Acts 6:4":{
+    sub:"we will devote ourselves",
+    src:[
+      {h:"Morphology", src:"MorphGNT", dl:[
+        ["Verb","προσκαρτερήσομεν"],
+        ["Form","future indicative"],
+        ["Root","same as Acts 2:42"]
+      ]}
+    ],
+    gen:["The apostles apply the church's own verb to themselves. What the whole community did in 2:42, the twelve now claim as their particular assignment when the work has to be divided."]
+  }
+};
+
+/* ---------------- word study ---------------- */
+
+const mapIcon = '<svg width="17" height="17" viewBox="0 0 17 17" fill="none" stroke-width="1.3"><circle cx="8.5" cy="4" r="2"/><circle cx="3.5" cy="13" r="2"/><circle cx="13.5" cy="13" r="2"/><path d="M7.4 5.8 4.6 11.2M9.6 5.8l2.8 5.4M5.5 13h6" stroke-linecap="round"/></svg>';
+
+document.getElementById("senses").innerHTML = SENSES.map(s => `
+  <div class="sense">
+    <div class="sense-h"><h3>${s.name}</h3><em>${s.gloss}</em></div>
+    <p>${s.note}</p>
+    ${s.verses.map(v => `
+      <div class="verse">
+        <div class="verse-body">
+          <p class="verse-ref">${v.ref}</p>
+          <p class="verse-txt">${v.txt}</p>
+        </div>
+        <button class="map-btn" aria-label="Map ${v.ref}" onclick="openMap('${v.ref}')">${mapIcon}</button>
+      </div>`).join("")}
+  </div>`).join("");
+
+/* ---------------- map ---------------- */
+
+let trail = [], seen = new Set(), off = {lex:true, lit:true, the:true};
+
+function openMap(ref){
+  if(!MAPS[ref]) ref = "Acts 2:42";
+  trail = [ref]; seen = new Set([ref]);
+  renderFilters(); renderTrail(); renderMap(ref);
+  document.getElementById("pane-word").dataset.state = "behind";
+  document.getElementById("pane-map").dataset.state = "on";
+}
+function closeMap(){
+  closeSheet();
+  document.getElementById("pane-map").dataset.state = "off";
+  document.getElementById("pane-word").dataset.state = "on";
+}
+function go(ref){
+  if(!MAPS[ref]){ openSheet(ref); return; }
+  seen.add(ref); trail.push(ref); renderTrail(); renderMap(ref);
+}
+function back(i){ trail = trail.slice(0, i+1); renderTrail(); renderMap(trail[i]); }
+
+function renderTrail(){
+  document.getElementById("trail").innerHTML = trail.map((t,i) =>
+    (i ? '<i>›</i>' : '') +
+    `<button onclick="back(${i})" aria-current="${i===trail.length-1}">${short(t)}</button>`
+  ).join("");
+}
+function renderFilters(){
+  document.getElementById("filters").innerHTML = Object.entries(EDGE).map(([k,e]) =>
+    `<button aria-pressed="${off[k]}" onclick="toggle('${k}')"><span style="background:${e.color}"></span>${e.label}</button>`
+  ).join("");
+}
+function toggle(k){
+  off[k] = !off[k];
+  renderFilters(); renderMap(trail[trail.length-1]);
+}
+
+function short(r){
+  return r.replace("Corinthians","Cor").replace("Ephesians","Eph")
+          .replace("Colossians","Col").replace("Philippians","Phil")
+          .replace("Matthew","Matt").replace("Romans","Rom")
+          .replace("Hebrews","Heb").replace("Timothy","Tim")
+          .replace("Galatians","Gal");
+}
+
+const ANG = [252, 302, 356, 62, 118, 178];
+
+function renderMap(ref){
+  const m = MAPS[ref];
+  const shown = m.nodes.filter(n => off[n.t]);
+  document.getElementById("map-note").textContent = shown.length + " of " + m.nodes.length + " nearby";
+  document.getElementById("legend").textContent =
+    "Closer means more alike. Line style names the kind of link. A dot marks a verse already visited.";
+
+  const CX = 187, CY = 196;
+  let lines = "", nodes = "";
+
+  shown.forEach((n, i) => {
+    const idx = m.nodes.indexOf(n);
+    const r = 208 - n.w * 148, a = ANG[idx] * Math.PI / 180;
+    const x = CX + r * Math.cos(a), y = CY + r * Math.sin(a);
+    const e = EDGE[n.t];
+    lines += `<line x1="${CX}" y1="${CY}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="${e.color}" stroke-width="1.2" stroke-dasharray="${e.dash}" stroke-opacity="${(0.3 + n.w*0.5).toFixed(2)}"/>`;
+    const w = 112, h = 44, bx = x - w/2, by = y - h/2;
+    nodes += `<g class="nd enter" style="animation-delay:${60 + i*45}ms;transform-origin:${x.toFixed(1)}px ${y.toFixed(1)}px" onclick="go('${n.id}')" role="button" tabindex="0">
+      <rect x="${bx.toFixed(1)}" y="${by.toFixed(1)}" width="${w}" height="${h}" rx="3" fill="#F3F2EC" stroke="${e.color}" stroke-width="1"/>
+      <text x="${x.toFixed(1)}" y="${(y-5).toFixed(1)}" text-anchor="middle" font-size="15" font-weight="500" fill="#23221E">${short(n.id)}</text>
+      <text x="${x.toFixed(1)}" y="${(y+12).toFixed(1)}" text-anchor="middle" font-size="12.5" fill="#8E8C83">${n.tag}</text>
+    </g>`;
+    if(seen.has(n.id)) nodes += `<circle cx="${(bx+w-7).toFixed(1)}" cy="${(by+7).toFixed(1)}" r="2.6" fill="#8E8C83"/>`;
+  });
+
+  document.getElementById("mapwrap").innerHTML = `
+    <svg id="mapsvg" width="100%" viewBox="0 0 374 392" role="img" aria-label="Verses related to ${ref}">
+      ${lines}
+      <g class="nd" onclick="openSheet('${ref}')" role="button" tabindex="0">
+        <rect x="${CX-72}" y="${CY-27}" width="144" height="54" rx="3" fill="#F0E1DC" stroke="#9C3627" stroke-width="1.4"/>
+        <text x="${CX}" y="${CY-6}" text-anchor="middle" font-size="17" font-weight="600" fill="#23221E">${short(ref)}</text>
+        <text x="${CX}" y="${CY+13}" text-anchor="middle" font-size="12.5" fill="#9C3627">${m.sub}</text>
+      </g>
+      ${nodes}
+    </svg>`;
+}
+
+/* ---------------- detail sheet ---------------- */
+
+function openSheet(ref){
+  const d = DETAIL[ref];
+  document.getElementById("sheet-title").textContent = ref;
+  document.getElementById("sheet-sub").textContent = d ? d.sub : "not yet mapped";
+  let html = "";
+  if(d){
+    d.src.forEach(b => {
+      html += `<div class="block src"><div class="block-h"><span class="tick"></span><b>${b.h}</b><em>${b.src}</em></div>`;
+      if(b.dl) html += `<dl class="dl">${b.dl.map(([k,v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("")}</dl>`;
+      if(b.p) html += b.p.map(t => `<p>${t}</p>`).join("");
+      html += `</div>`;
+    });
+    html += `<div class="block gen"><div class="block-h"><span class="tick"></span><b>Reading</b><em>written by the model</em></div>${d.gen.map(t => `<p>${t}</p>`).join("")}</div>`;
+    if(MAPS[ref] && ref !== trail[trail.length-1])
+      html += `<div class="block"><button class="jump" onclick="closeSheet();go('${ref}')">Open this map</button></div>`;
+  } else {
+    html = `<div class="block src"><div class="block-h"><span class="tick"></span><b>Nothing cached</b></div><p>No map has been built for this verse yet. Building one takes a moment and it will be stored for everyone afterwards.</p></div>`;
+  }
+  document.getElementById("sheet-body").innerHTML = html;
+  document.getElementById("sheet-body").scrollTop = 0;
+  document.getElementById("sheet").dataset.open = "true";
+  document.getElementById("scrim").dataset.open = "true";
+}
+function closeSheet(){
+  document.getElementById("sheet").dataset.open = "false";
+  document.getElementById("scrim").dataset.open = "false";
+}
+
+document.addEventListener("keydown", e => {
+  if(e.key === "Escape") closeSheet();
+  if(e.key === "Enter" && e.target.getAttribute("role") === "button") e.target.dispatchEvent(new Event("click"));
+});
+</script>
+</body>
+</html>

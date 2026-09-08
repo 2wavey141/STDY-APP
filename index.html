@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bible study visualizer — prototypes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ground:#D9D7CD;--page:#F3F2EC;--ink:#23221E;--soft:#63615A;--faint:#8E8C83;
+  --rule:#CDCABE;--madder:#9C3627;--wash:#F0E1DC;
+  --sans:"IBM Plex Sans",system-ui,sans-serif;--serif:"EB Garamond",Georgia,serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);font-family:var(--sans);color:var(--ink);
+  padding:52px 20px 80px;display:flex;justify-content:center}
+.wrap{width:100%;max-width:560px}
+h1{font-family:var(--serif);font-size:38px;font-weight:600;margin:0 0 10px;letter-spacing:-.015em}
+.lede{font-family:var(--serif);font-size:19px;line-height:1.55;color:var(--soft);margin:0 0 8px;max-width:52ch}
+.stamp{font-size:12px;color:var(--faint);margin:0 0 34px}
+
+.card{display:block;text-decoration:none;color:inherit;background:var(--page);
+  border:1px solid var(--rule);border-radius:4px;padding:20px 22px;margin-bottom:14px;
+  transition:border-color .15s,transform .15s}
+.card:hover{border-color:var(--madder);transform:translateY(-1px)}
+.card .n{font-size:11.5px;color:var(--faint);margin:0 0 4px}
+.card h2{font-family:var(--serif);font-size:23px;font-weight:600;margin:0 0 6px}
+.card p{font-size:14px;line-height:1.6;color:var(--soft);margin:0;max-width:50ch}
+.card .go{display:inline-block;margin-top:12px;font-size:13px;color:var(--madder)}
+.card.now{border-color:var(--madder);background:var(--wash)}
+.card.now .n{color:var(--madder)}
+
+.foot{margin-top:34px;padding-top:22px;border-top:1px solid var(--rule);
+  font-size:13.5px;line-height:1.7;color:var(--soft)}
+.foot b{font-weight:500;color:var(--ink)}
+.foot ul{margin:10px 0 0;padding-left:18px}
+.foot li{margin-bottom:6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>A visualizer for deep Bible study</h1>
+  <p class="lede">Three working prototypes, in the order they were designed. Each one is a phone screen you can tap through. Everything is built around a single verse, Acts 2:42.</p>
+  <p class="stamp">Interface prototypes only. No real data behind them yet.</p>
+
+  <a class="card now" href="v3-visualizer.html">
+    <p class="n">Latest</p>
+    <h2>Verse visualizer</h2>
+    <p>One verse at the center and six bubbles around it: setting, structure, the Greek words, things you can look at, where to read next, and the questions scholars have not settled. Tap a bubble and it rotates to the top.</p>
+    <span class="go">Open</span>
+  </a>
+
+  <a class="card" href="v2-two-tier.html">
+    <p class="n">Second pass</p>
+    <h2>One verse, two depths</h2>
+    <p>A plain reading page on the first tap, and a map of related passages on the second. Side by side, to show that the depth is optional. Sourced facts are marked in red, model-written interpretation in blue.</p>
+    <span class="go">Open</span>
+  </a>
+
+  <a class="card" href="v1-passage-map.html">
+    <p class="n">First pass</p>
+    <h2>Word study into a map</h2>
+    <p>Starts from a Greek word study, grouped by sense rather than canonical order, and opens into a map of semantically nearby verses. Kept here because the sense-grouping idea is worth arguing about.</p>
+    <span class="go">Open</span>
+  </a>
+
+  <div class="foot">
+    <b>What to look at.</b>
+    <ul>
+      <li>Whether you would tap the second screen at all, or stop at the first.</li>
+      <li>Whether the map tells you anything a ranked list wouldn't.</li>
+      <li>Whether the split between sourced facts and model interpretation reads clearly without being explained.</li>
+    </ul>
+  </div>
+
+</div>
+</body>
+</html>

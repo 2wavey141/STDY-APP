@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Verse visualizer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ground:#D9D7CD; --page:#F3F2EC; --panel:#EAE8E0;
+  --ink:#23221E; --ink-soft:#63615A; --ink-faint:#8E8C83; --rule:#CDCABE;
+  --madder:#9C3627; --moss:#5F6E4C; --indigo:#3A4A85;
+  --ochre:#9A6B24; --plum:#6E3F63; --slate:#4E5A66;
+  --sans:"IBM Plex Sans",system-ui,sans-serif;
+  --serif:"EB Garamond",Georgia,serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--ground);font-family:var(--sans);color:var(--ink);
+  padding:36px 16px 72px;display:flex;flex-direction:column;align-items:center}
+
+.head{max-width:390px;width:100%;margin-bottom:20px}
+.head h1{font-family:var(--serif);font-size:29px;font-weight:600;margin:0 0 6px}
+.head p{font-size:13.5px;line-height:1.6;color:var(--ink-soft);margin:0}
+
+.device{width:390px;max-width:100%;height:790px;background:var(--page);
+  border:1px solid var(--rule);border-radius:26px;overflow:hidden;
+  display:flex;flex-direction:column;position:relative}
+
+.vhead{flex:none;padding:16px 20px 14px;border-bottom:1px solid var(--rule)}
+.vhead .ref{font-size:12.5px;font-weight:500;color:var(--madder);margin:0 0 4px}
+.vhead .txt{font-family:var(--serif);font-size:18px;line-height:1.4;margin:0}
+
+.stage{flex:none;position:relative;height:392px;overflow:hidden}
+.wires{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+
+.bub{position:absolute;transform:translate(-50%,-50%);cursor:pointer;
+  transition:left .52s cubic-bezier(.34,.9,.26,1),top .52s cubic-bezier(.34,.9,.26,1),
+             width .3s ease,opacity .3s ease;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;border-radius:50%;border:1.5px solid;background:var(--page);
+  width:92px;height:92px;padding:6px}
+.bub b{font-family:var(--serif);font-size:15px;font-weight:600;line-height:1.15;display:block}
+.bub small{font-size:10.5px;color:var(--ink-faint);margin-top:2px}
+.bub:hover{width:100px;height:100px}
+.bub[data-sel="true"]{background:var(--panel);border-width:2.5px}
+.bub[data-dim="true"]{opacity:.42}
+
+.core{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:118px;height:118px;border-radius:50%;background:#F0E1DC;
+  border:2px solid var(--madder);display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;pointer-events:none}
+.core b{font-family:var(--serif);font-size:21px;font-weight:600}
+.core small{font-size:10.5px;color:var(--madder);margin-top:2px}
+
+@media (prefers-reduced-motion:no-preference){
+  .float{animation:fl 7s ease-in-out infinite}
+  @keyframes fl{0%,100%{margin-top:0}50%{margin-top:-5px}}
+}
+
+.tray{flex:1;border-top:1px solid var(--rule);background:var(--panel);
+  overflow-y:auto;overscroll-behavior:contain}
+.tray-h{position:sticky;top:0;background:var(--panel);padding:13px 20px 9px;
+  border-bottom:1px solid var(--rule);display:flex;align-items:baseline;gap:8px}
+.tray-h b{font-family:var(--serif);font-size:18px;font-weight:600}
+.tray-h em{font-style:normal;font-size:11.5px;color:var(--ink-faint);margin-left:auto}
+.dot{width:9px;height:9px;border-radius:50%;flex:none;align-self:center}
+
+.item{border-bottom:1px solid var(--rule)}
+.item-t{width:100%;text-align:left;background:none;border:none;cursor:pointer;
+  font-family:var(--sans);padding:12px 20px;display:flex;gap:10px;align-items:baseline}
+.item-t span{flex:1;font-family:var(--serif);font-size:16.5px;line-height:1.3}
+.item-t i{font-style:normal;font-size:11px;color:var(--ink-faint);flex:none}
+.item-b{display:none;padding:0 20px 16px}
+.item[data-open="true"] .item-b{display:block}
+.item[data-open="true"] .item-t span{color:var(--madder)}
+.item-b p{font-family:var(--serif);font-size:16px;line-height:1.55;margin:0 0 10px;max-width:44ch}
+.item-b p:last-child{margin-bottom:0}
+.item-b .gk{font-size:22px;font-family:var(--serif);display:block;margin-bottom:2px}
+.src{font-size:11px;color:var(--ink-faint);margin-top:8px}
+.gen-tag{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--indigo);margin-bottom:6px}
+.gen-tag span{width:7px;height:7px;border-radius:50%;background:var(--indigo)}
+
+.plate{background:var(--page);border:1px solid var(--rule);border-radius:2px;
+  height:112px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:6px;color:var(--ink-faint);margin-bottom:8px;
+  background-image:repeating-linear-gradient(45deg,#EAE8E0 0 6px,transparent 6px 12px)}
+.plate b{font-family:var(--sans);font-size:11.5px;font-weight:400}
+
+.note{max-width:390px;width:100%;margin-top:20px;font-size:13px;line-height:1.7;color:var(--ink-soft)}
+.note b{font-weight:500;color:var(--ink)}
+</style>
+</head>
+<body>
+
+<div class="head">
+  <h1>Verse visualizer</h1>
+  <p>Tap a bubble. It rotates to the top and opens below.</p>
+</div>
+
+<div class="device">
+  <div class="vhead">
+    <p class="ref">Acts 2:42</p>
+    <p class="txt">They devoted themselves to the apostles' teaching and the fellowship, to the breaking of bread and the prayers.</p>
+  </div>
+
+  <div class="stage" id="stage">
+    <svg class="wires" id="wires" viewBox="0 0 390 392" preserveAspectRatio="none"></svg>
+    <div class="core"><b>Acts 2:42</b><small>Jerusalem, c. AD 30</small></div>
+  </div>
+
+  <div class="tray" id="tray"></div>
+</div>
+
+<p class="note">
+  <b>Six bubbles, one job each.</b> Nothing is buried more than two taps deep, and the verse stays
+  on screen the whole time. The last bubble is the one no other Bible app has: the places where
+  scholars genuinely disagree, shown as disagreement rather than flattened into a single answer.
+</p>
+
+<script>
+const F = [
+  {id:"hist", label:"Where and when", sub:"setting", color:"#5F6E4C", items:[
+    {t:"The temple hours of prayer", src:"Josephus; Mishnah Tamid", b:[
+      "Jewish practice fixed prayer at set times through the day, including the hour of the afternoon offering. Acts 3:1 has Peter and John going up at the ninth hour.",
+      "This is why the verse says <i>the</i> prayers rather than prayer in general."]},
+    {t:"Houses, not buildings", src:"Archaeology of first-century Jerusalem", b:[
+      "There were no church buildings. Acts 2:46 says they met in the temple courts and broke bread at home. A well-off Jerusalem house might hold thirty or forty people in its courtyard."]},
+    {t:"Bread at an ordinary meal", src:"Second Temple table practice", b:[
+      "The head of the household took bread, blessed God, broke it and handed it round to open the meal. The gesture was daily and unremarkable, which is part of why the phrase is hard to pin down."]},
+    {t:"Weeks after Pentecost", src:"Acts 2:1, 2:41", b:[
+      "Three thousand were added at Pentecost. This summary describes what that crowd settled into afterwards."]}
+  ]},
+
+  {id:"lit", label:"Where it sits", sub:"structure", color:"#3A4A85", items:[
+    {t:"One of Luke's three summaries", src:"Acts 2:42-47; 4:32-35; 5:12-16", b:[
+      "Luke pauses the narrative three times to describe the community as a whole. Reading all three together shows what he keeps repeating: shared possessions, shared meals, growth."]},
+    {t:"It follows the sermon", src:"Acts 2:14-41", b:[
+      "The verse is the answer to Peter's sermon. Three thousand respond, and this is what responding looked like in practice."]},
+    {t:"Volume two of one book", src:"Luke 1:1-4; Acts 1:1", b:[
+      "Luke and Acts were written to the same person as a single work. Anything Luke does in the gospel he may be echoing here on purpose."]},
+    {t:"Four items, one verb", src:"MorphGNT", b:[
+      "The four datives all hang off a single periphrastic imperfect. Grammatically this is one sustained habit, not a list of four programmes."]}
+  ]},
+
+  {id:"word", label:"The words", sub:"Greek", color:"#9C3627", items:[
+    {t:"προσκαρτεροῦντες", gk:1, src:"Strong's G4342", b:[
+      "<b>proskarterountes</b> — to persist in, to attend constantly. Ten uses in the New Testament, six in Acts. Paired with ἦσαν it means they kept it up, continuously, over time."]},
+    {t:"κοινωνίᾳ", gk:1, src:"Strong's G2842", b:[
+      "<b>koinōnia</b> — from κοινός, common. Nineteen uses. Can mean participation in something, partnership in a work, or literally a cash contribution."]},
+    {t:"κλάσει τοῦ ἄρτου", gk:1, src:"Strong's G2800", b:[
+      "<b>klasis</b> — a breaking. Only two uses in the whole New Testament, and Luke wrote both: here and Luke 24:35."]},
+    {t:"ταῖς προσευχαῖς", gk:1, src:"Strong's G4335", b:[
+      "<b>proseuchai</b> — prayers, plural, with the article. The article is doing work: a known set, not prayer as a general activity."]}
+  ]},
+
+  {id:"see", label:"See it", sub:"places, objects", color:"#9A6B24", items:[
+    {t:"Southern steps of the Temple Mount", img:"Broad Herodian stairs, still in place today", src:"Wikimedia Commons, public domain", b:[
+      "The main pilgrim approach to the temple courts. If they were going up at the hour of prayer, they were going up these."]},
+    {t:"The Burnt House", img:"Excavated priestly house, Jewish Quarter", src:"Wikimedia Commons, CC BY-SA", b:[
+      "A first-century Jerusalem house destroyed in AD 70, excavated with its rooms intact. The closest thing to seeing the rooms this verse describes."]},
+    {t:"A Herodian stone oven and bread stamp", img:"Household baking equipment, first century", src:"Israel Museum, open content", b:[
+      "Bread was baked at home daily in flat loaves that were torn rather than sliced. Breaking is a description of how you open a loaf, not a ritual gesture."]},
+    {t:"Model of the second temple", img:"Scale reconstruction, Israel Museum", src:"Wikimedia Commons, CC BY-SA", b:[
+      "Useful for seeing how the courts, steps and city fit together."]}
+  ]},
+
+  {id:"next", label:"Read next", sub:"passages", color:"#6E3F63", items:[
+    {t:"Luke 24:35", src:"Same author, same phrase", b:[
+      "The road to Emmaus. He was known to them in the breaking of the bread. The only other use of that noun in the New Testament."]},
+    {t:"Acts 4:32", src:"Same author, same subject", b:[
+      "The second summary. One heart and soul, everything in common. Shows what the fellowship meant in practice."]},
+    {t:"1 Corinthians 10:16", src:"Same word", b:[
+      "Paul uses κοινωνία of the cup and the bread, which is the closest link between this verse and the Lord's Supper."]},
+    {t:"Acts 6:4", src:"Same verb", b:[
+      "The apostles use the church's own verb of themselves when the work has to be divided."]}
+  ]},
+
+  {id:"open", label:"Still argued", sub:"open questions", color:"#4E5A66", items:[
+    {t:"Is the breaking of bread the Lord's Supper?", src:"contested", gen:1, b:[
+      "Some read it as the eucharist from the beginning, pointing to 1 Corinthians 10 and 11. Others read it as ordinary shared meals, pointing to Acts 2:46 and 27:35 where the same language describes plain eating.",
+      "The phrase by itself cannot settle it. Which way you lean usually depends on what you already think about the origins of the eucharist."]},
+    {t:"Was the sharing of goods permanent?", src:"contested", gen:1, b:[
+      "Acts 4:34 describes property being sold as needs arose, not a standing common purse. Whether Luke is describing a temporary emergency arrangement in Jerusalem or a pattern he expects to continue is disputed."]},
+    {t:"Which prayers?", src:"contested", gen:1, b:[
+      "The article suggests a fixed set. Candidates include the Jewish hours of prayer, the Amidah, or an early Christian pattern that has left no direct evidence. There is no consensus."]}
+  ]}
+];
+
+const stage = document.getElementById("stage");
+const wires = document.getElementById("wires");
+const tray  = document.getElementById("tray");
+const CX = 195, CY = 196, R = 122;
+let sel = null;
+
+F.forEach((f, i) => {
+  const el = document.createElement("div");
+  el.className = "bub float";
+  el.id = "b-" + f.id;
+  el.style.borderColor = f.color;
+  el.style.animationDelay = (i * 0.9) + "s";
+  el.setAttribute("role", "button");
+  el.setAttribute("tabindex", "0");
+  el.innerHTML = `<b style="color:${f.color}">${f.label}</b><small>${f.sub}</small>`;
+  el.onclick = () => pick(f.id);
+  el.onkeydown = e => { if(e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(f.id); } };
+  stage.appendChild(el);
+});
+
+function place(){
+  const si = sel ? F.findIndex(f => f.id === sel) : 0;
+  const shift = sel ? -si * 60 : 0;
+  let w = "";
+  F.forEach((f, i) => {
+    const deg = 270 + i * 60 + shift;
+    const a = deg * Math.PI / 180;
+    const x = CX + R * Math.cos(a), y = CY + R * Math.sin(a);
+    const el = document.getElementById("b-" + f.id);
+    el.style.left = x + "px";
+    el.style.top = y + "px";
+    el.dataset.sel = (sel === f.id);
+    el.dataset.dim = (sel !== null && sel !== f.id);
+    const on = sel === f.id;
+    w += `<line x1="${CX}" y1="${CY}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}"
+            stroke="${f.color}" stroke-width="${on ? 2 : 1}"
+            stroke-opacity="${sel === null ? .5 : (on ? .95 : .18)}"/>`;
+  });
+  wires.innerHTML = w;
+}
+
+function pick(id){
+  sel = (sel === id) ? null : id;
+  place();
+  drawTray();
+  if(sel) tray.scrollTop = 0;
+}
+
+function drawTray(){
+  if(!sel){
+    tray.innerHTML = `<div class="tray-h"><b>Six ways in</b><em>tap a bubble</em></div>
+      <div style="padding:16px 20px;font-family:var(--serif);font-size:16.5px;line-height:1.55;color:var(--ink-soft);max-width:44ch">
+      Setting, structure, the Greek behind the English, things you can look at, where to read next,
+      and the questions scholars have not settled.</div>`;
+    return;
+  }
+  const f = F.find(x => x.id === sel);
+  tray.innerHTML =
+    `<div class="tray-h"><span class="dot" style="background:${f.color}"></span><b>${f.label}</b><em>${f.items.length} entries</em></div>` +
+    f.items.map((it, i) => `
+      <div class="item" data-open="false" id="i-${i}">
+        <button class="item-t" onclick="flip(${i})">
+          <span${it.gk ? ' class="gk"' : ''}>${it.t}</span><i>${it.gk ? "word" : ""}</i>
+        </button>
+        <div class="item-b">
+          ${it.gen ? '<span class="gen-tag"><span></span>written by the model</span>' : ""}
+          ${it.img ? `<div class="plate"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.5"/><path d="m4 17 5-5 4 4 3-3 4 4"/></svg><b>${it.img}</b></div>` : ""}
+          ${it.b.map(p => `<p>${p}</p>`).join("")}
+          <p class="src">${it.src}</p>
+        </div>
+      </div>`).join("");
+}
+
+function flip(i){
+  const el = document.getElementById("i-" + i);
+  const open = el.dataset.open === "true";
+  document.querySelectorAll(".item").forEach(x => x.dataset.open = "false");
+  el.dataset.open = open ? "false" : "true";
+}
+
+place();
+drawTray();
+</script>
+</body>
+</html>

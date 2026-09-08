@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Passage study — two tiers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ground:#D9D7CD; --page:#F3F2EC; --panel:#EAE8E0;
+  --ink:#23221E; --ink-soft:#63615A; --ink-faint:#8E8C83; --rule:#CDCABE;
+  --madder:#9C3627; --madder-wash:#F0E1DC;
+  --indigo:#3A4A85; --indigo-wash:#E2E4EF;
+  --moss:#5F6E4C;
+  --sans:"IBM Plex Sans",system-ui,sans-serif;
+  --serif:"EB Garamond",Georgia,serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--ground);font-family:var(--sans);color:var(--ink);padding:40px 16px 72px}
+
+.head{max-width:850px;margin:0 auto 28px}
+.head h1{font-family:var(--serif);font-size:32px;font-weight:600;margin:0 0 8px;letter-spacing:-.01em}
+.head p{font-size:14.5px;line-height:1.65;color:var(--ink-soft);margin:0;max-width:62ch}
+
+.stage{display:flex;gap:28px;justify-content:center;flex-wrap:wrap;align-items:flex-start}
+.col{width:390px;max-width:100%}
+.col-h{margin:0 0 10px;font-size:13px;color:var(--ink-soft)}
+.col-h b{display:block;font-family:var(--serif);font-size:20px;font-weight:600;color:var(--ink)}
+
+.device{
+  height:760px;background:var(--page);border:1px solid var(--rule);
+  border-radius:26px;overflow:hidden;position:relative;
+  display:flex;flex-direction:column;
+}
+.scroll{flex:1;overflow-y:auto;overscroll-behavior:contain}
+
+/* verse header, shared by both tiers */
+.vhead{flex:none;padding:20px 20px 16px;border-bottom:1px solid var(--rule);background:var(--page)}
+.vref{font-size:12.5px;font-weight:500;color:var(--madder);margin:0 0 5px}
+.vtext{font-family:var(--serif);font-size:20px;line-height:1.42;margin:0}
+.vtext mark{background:var(--madder-wash);color:inherit;padding:0 2px}
+.vhead .tr{font-family:var(--serif);font-size:14px;font-style:italic;color:var(--ink-faint);margin:8px 0 0}
+
+/* tier one */
+.sec{padding:20px;border-bottom:1px solid var(--rule)}
+.sec:last-of-type{border-bottom:none}
+.sec h3{font-family:var(--serif);font-size:19px;font-weight:600;margin:0 0 10px}
+.sec p{font-family:var(--serif);font-size:16.5px;line-height:1.55;margin:0 0 11px;max-width:46ch}
+.sec p:last-child{margin-bottom:0}
+.gk{font-family:var(--serif);font-weight:500;border-bottom:1px dotted var(--madder);cursor:help}
+
+.reading{background:var(--indigo-wash);border-bottom:1px solid var(--rule);padding:18px 20px}
+.reading .who{display:flex;align-items:center;gap:7px;margin-bottom:9px}
+.reading .who span{width:9px;height:9px;border-radius:50%;background:var(--indigo);flex:none}
+.reading .who b{font-size:12.5px;font-weight:500;color:var(--indigo)}
+.reading .who em{font-style:normal;font-size:11px;color:var(--ink-faint);margin-left:auto}
+.reading p{font-family:var(--serif);font-size:16.5px;line-height:1.55;color:#2C3563;margin:0;max-width:46ch}
+
+.next{padding:20px}
+.next h3{font-family:var(--serif);font-size:19px;font-weight:600;margin:0 0 4px}
+.row{display:flex;gap:12px;align-items:flex-start;padding:13px 0;border-top:1px solid var(--rule);cursor:pointer}
+.row:last-child{border-bottom:1px solid var(--rule)}
+.row:hover .r-ref{color:var(--madder)}
+.r-body{flex:1;min-width:0}
+.r-ref{font-family:var(--serif);font-size:17px;font-weight:600;margin:0;transition:color .12s}
+.r-why{font-size:13px;line-height:1.5;color:var(--ink-soft);margin:2px 0 0}
+.r-kind{flex:none;font-size:11px;color:var(--ink-faint);padding-top:4px;white-space:nowrap}
+.r-kind i{font-style:normal;display:inline-block;width:16px;height:2px;vertical-align:2px;margin-right:5px}
+
+.cta{padding:16px 20px 28px}
+.cta button{
+  width:100%;display:flex;align-items:center;justify-content:center;gap:9px;
+  font-family:var(--sans);font-size:14px;font-weight:500;
+  background:var(--madder);color:#F7F4EF;border:none;border-radius:3px;
+  padding:14px;cursor:pointer;
+}
+.cta button:hover{background:#87301F}
+.cta small{display:block;text-align:center;font-size:11.5px;color:var(--ink-faint);margin-top:9px}
+
+/* tier two */
+.trail{flex:none;display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:9px 20px;border-bottom:1px solid var(--rule);background:var(--panel)}
+.trail button{font-size:11.5px;font-family:var(--sans);border:1px solid var(--rule);background:var(--page);color:var(--ink-soft);padding:3px 8px;border-radius:2px;cursor:pointer}
+.trail button[aria-current="true"]{border-color:var(--madder);color:var(--madder);background:var(--madder-wash)}
+.trail i{font-style:normal;font-size:11px;color:var(--ink-faint)}
+
+.howto{padding:12px 20px 4px;font-size:12.5px;line-height:1.55;color:var(--ink-soft)}
+.howto b{font-weight:500;color:var(--ink)}
+#mapwrap{padding:0 6px}
+#mapsvg text{font-family:var(--serif)}
+.nd{cursor:pointer}
+.nd rect{transition:fill .14s}
+.nd:hover rect{fill:var(--madder-wash)}
+@media (prefers-reduced-motion:no-preference){
+  .enter{animation:pop .4s cubic-bezier(.2,.9,.3,1) backwards}
+  @keyframes pop{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
+}
+.listhead{padding:6px 20px 0;font-size:12.5px;color:var(--ink-faint)}
+.mlist{padding:0 20px 24px}
+
+.note{max-width:850px;margin:26px auto 0;font-size:13px;line-height:1.7;color:var(--ink-soft)}
+.note b{font-weight:500;color:var(--ink)}
+@media(max-width:860px){.stage{gap:36px}}
+</style>
+</head>
+<body>
+
+<div class="head">
+  <h1>One verse, two depths</h1>
+  <p>The left screen is what everyone gets when they tap a verse. The right screen is what they get if they tap once more. Nothing on the right is required to understand the left.</p>
+</div>
+
+<div class="stage">
+
+  <!-- TIER ONE -->
+  <div class="col">
+    <p class="col-h">First tap<b>The reading page</b></p>
+    <div class="device">
+      <div class="vhead">
+        <p class="vref">Acts 2:42</p>
+        <p class="vtext">They devoted themselves to the apostles' teaching and the <mark>fellowship</mark>, to the breaking of bread and the prayers.</p>
+      </div>
+      <div class="scroll">
+
+        <div class="sec">
+          <h3>What the words are doing</h3>
+          <p>"Devoted themselves" is one verb, <span class="gk" title="proskarterountes">προσκαρτεροῦντες</span>, in a form that means they kept it up over time. It governs all four items, so this is one habit seen from four sides rather than four separate activities.</p>
+          <p>"The prayers" has the definite article. Not prayer in general, but a known set of them.</p>
+        </div>
+
+        <div class="sec">
+          <h3>What was happening</h3>
+          <p>Jerusalem, within weeks of Pentecost. These are Jewish believers who still went up to the temple at the fixed hours of prayer and then ate in each other's houses. Nothing here has left the synagogue yet.</p>
+        </div>
+
+        <div class="reading">
+          <div class="who"><span></span><b>Reading</b><em>written by the model</em></div>
+          <p>The four items are probably not a programme Luke is prescribing. He is describing what the community looked like, and the single governing verb is what makes it a portrait rather than a checklist.</p>
+        </div>
+
+        <div class="next">
+          <h3>Read next</h3>
+          <div class="row" onclick="go('Luke 24:35')">
+            <div class="r-body">
+              <p class="r-ref">Luke 24:35</p>
+              <p class="r-why">The only other place this exact phrase for breaking bread appears, and Luke wrote both.</p>
+            </div>
+            <span class="r-kind"><i style="background:#3A4A85"></i>author</span>
+          </div>
+          <div class="row" onclick="go('1 Corinthians 10:16')">
+            <div class="r-body">
+              <p class="r-ref">1 Corinthians 10:16</p>
+              <p class="r-why">Uses the same word for fellowship, of the bread and the cup.</p>
+            </div>
+            <span class="r-kind"><i style="background:#9C3627"></i>word</span>
+          </div>
+          <div class="row" onclick="go('Acts 4:32')">
+            <div class="r-body">
+              <p class="r-ref">Acts 4:32</p>
+              <p class="r-why">Shows what the fellowship actually looked like in practice.</p>
+            </div>
+            <span class="r-kind"><i style="background:#3A4A85"></i>author</span>
+          </div>
+        </div>
+
+        <div class="cta">
+          <button onclick="document.getElementById('map-dev').scrollIntoView({behavior:'smooth',block:'center'})">
+            <svg width="16" height="16" viewBox="0 0 17 17" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8.5" cy="4" r="2"/><circle cx="3.5" cy="13" r="2"/><circle cx="13.5" cy="13" r="2"/><path d="M7.4 5.8 4.6 11.2M9.6 5.8l2.8 5.4M5.5 13h6" stroke-linecap="round"/></svg>
+            See all the connections
+          </button>
+          <small>Opens a map of every related verse</small>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- TIER TWO -->
+  <div class="col">
+    <p class="col-h">Second tap<b>The map</b></p>
+    <div class="device" id="map-dev">
+      <div class="vhead">
+        <p class="vref" id="m-ref">Acts 2:42</p>
+        <p class="vtext" id="m-text"></p>
+      </div>
+      <div class="trail" id="trail"></div>
+      <div class="scroll">
+        <p class="howto">Every verse below is also a dot above. <b>Closer means more alike.</b> Tap either one.</p>
+        <div id="mapwrap"></div>
+        <p class="listhead" id="listhead"></p>
+        <div class="mlist" id="mlist"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<p class="note">
+  <b>What changed.</b> The verse text is now pinned to the top of both screens and never scrolls away.
+  The map button says what it does. Every dot on the map is repeated as a ranked row underneath, so the
+  spatial reading is optional rather than required. And travelling to a new verse keeps the old one on
+  screen, marked <b>came from</b>, instead of wiping the canvas.
+</p>
+
+<script>
+const TEXT = {
+  "Acts 2:42":"They devoted themselves to the apostles' teaching and the fellowship, to the breaking of bread and the prayers.",
+  "Luke 24:35":"Then they told what had happened on the road, and how he was known to them in the breaking of the bread.",
+  "1 Corinthians 10:16":"The cup of blessing that we bless, is it not a sharing in the blood of Christ?",
+  "Acts 4:32":"Now the full number of those who believed were of one heart and soul, and they had everything in common.",
+  "Acts 6:4":"But we will devote ourselves to prayer and to the ministry of the word."
+};
+const KIND = {word:"#9C3627", author:"#3A4A85", theme:"#5F6E4C"};
+
+const MAPS = {
+  "Acts 2:42":[
+    {id:"Luke 24:35", w:.82, k:"author", why:"The same phrase for breaking bread, and Luke wrote both books."},
+    {id:"1 Corinthians 10:16", w:.79, k:"word", why:"Same word for fellowship, used of the bread and the cup."},
+    {id:"Acts 4:32", w:.77, k:"author", why:"Luke's second summary of the same community."},
+    {id:"Acts 6:4", w:.74, k:"word", why:"The apostles use the same verb of themselves."},
+    {id:"1 John 1:3", w:.71, k:"word", why:"Fellowship with each other and with the Father."},
+    {id:"Hebrews 10:25", w:.68, k:"theme", why:"On not giving up meeting together."}
+  ],
+  "Luke 24:35":[
+    {id:"Luke 24:30", w:.91, k:"author", why:"The meal itself, five verses earlier."},
+    {id:"Acts 2:42", w:.82, k:"author", why:"The only other use of this exact phrase."},
+    {id:"Luke 22:19", w:.80, k:"author", why:"The last supper, in the same gospel."},
+    {id:"Acts 20:11", w:.75, k:"author", why:"Paul breaks bread at Troas after midnight."},
+    {id:"Acts 27:35", w:.72, k:"author", why:"Bread taken and broken during the shipwreck."},
+    {id:"John 21:13", w:.67, k:"theme", why:"Jesus gives bread by the sea after the resurrection."}
+  ],
+  "1 Corinthians 10:16":[
+    {id:"1 Corinthians 11:24", w:.86, k:"author", why:"Paul's own account of the supper, a chapter later."},
+    {id:"Luke 22:19", w:.84, k:"theme", why:"The words Paul is quoting."},
+    {id:"Acts 2:42", w:.79, k:"word", why:"Same word for fellowship, in Luke's summary."},
+    {id:"Matthew 26:26", w:.81, k:"theme", why:"Took bread, blessed, broke, gave."},
+    {id:"1 Corinthians 12:13", w:.70, k:"author", why:"One Spirit, one body, same argument."},
+    {id:"John 6:53", w:.66, k:"theme", why:"Eating and drinking as participation."}
+  ],
+  "Acts 4:32":[
+    {id:"Acts 2:44", w:.93, k:"author", why:"Almost the same sentence, two chapters earlier."},
+    {id:"Acts 2:42", w:.77, k:"author", why:"Names the fellowship this passage describes."},
+    {id:"Acts 5:1", w:.66, k:"author", why:"Ananias holds back, immediately after."},
+    {id:"2 Corinthians 8:14", w:.71, k:"theme", why:"Paul on evening out the surplus and the need."},
+    {id:"Romans 15:26", w:.69, k:"word", why:"The same word, meaning a cash collection."},
+    {id:"1 Timothy 6:18", w:.63, k:"theme", why:"Be generous and ready to share."}
+  ],
+  "Acts 6:4":[
+    {id:"Acts 1:14", w:.78, k:"word", why:"The same verb, of the group before Pentecost."},
+    {id:"Acts 2:42", w:.74, k:"word", why:"The whole church doing what the twelve now claim."},
+    {id:"Romans 12:12", w:.72, k:"word", why:"Paul uses the verb of persevering in prayer."},
+    {id:"Colossians 4:2", w:.70, k:"word", why:"Continue steadfastly in prayer."},
+    {id:"Acts 13:2", w:.65, k:"author", why:"Worship and fasting at Antioch."},
+    {id:"Ephesians 6:18", w:.62, k:"theme", why:"Praying at all times in the Spirit."}
+  ]
+};
+
+let trail = ["Acts 2:42"], from = null;
+
+function short(r){
+  return r.replace("Corinthians","Cor").replace("Colossians","Col")
+          .replace("Ephesians","Eph").replace("Matthew","Matt")
+          .replace("Romans","Rom").replace("Hebrews","Heb")
+          .replace("Timothy","Tim");
+}
+function go(ref){
+  if(!MAPS[ref]) return;
+  from = trail[trail.length-1];
+  trail.push(ref);
+  render();
+  document.getElementById("map-dev").scrollIntoView({behavior:"smooth", block:"center"});
+}
+function back(i){
+  from = i > 0 ? trail[i-1] : null;
+  trail = trail.slice(0, i+1);
+  render();
+}
+
+const ANG = [250, 302, 356, 62, 118, 178];
+
+function render(){
+  const ref = trail[trail.length-1];
+  const nodes = MAPS[ref];
+
+  document.getElementById("m-ref").textContent = ref;
+  document.getElementById("m-text").textContent = TEXT[ref] || "";
+  document.getElementById("trail").innerHTML = trail.map((t,i) =>
+    (i ? '<i>›</i>' : '') + `<button onclick="back(${i})" aria-current="${i===trail.length-1}">${short(t)}</button>`
+  ).join("");
+  document.getElementById("listhead").textContent = "Nearest first";
+
+  const CX = 187, CY = 200;
+  let lines = "", marks = "";
+
+  nodes.forEach((n, i) => {
+    const r = 206 - n.w * 146, a = ANG[i] * Math.PI/180;
+    const x = CX + r*Math.cos(a), y = CY + r*Math.sin(a);
+    const c = KIND[n.k], isFrom = n.id === from;
+    lines += `<line x1="${CX}" y1="${CY}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="${c}" stroke-width="1.2" stroke-opacity="${(.3+n.w*.5).toFixed(2)}"/>`;
+    const w = 110, h = isFrom ? 46 : 34, bx = x-w/2, by = y-h/2;
+    marks += `<g class="nd enter" style="animation-delay:${50+i*40}ms;transform-origin:${x.toFixed(1)}px ${y.toFixed(1)}px" onclick="go('${n.id}')" role="button" tabindex="0" aria-label="${n.id}">
+      <rect x="${bx.toFixed(1)}" y="${by.toFixed(1)}" width="${w}" height="${h}" rx="3" fill="${isFrom?'#EAE8E0':'#F3F2EC'}" stroke="${c}" stroke-width="${isFrom?1.6:1}"/>
+      <text x="${x.toFixed(1)}" y="${(isFrom?y-4:y+5).toFixed(1)}" text-anchor="middle" font-size="15" font-weight="500" fill="#23221E">${short(n.id)}</text>
+      ${isFrom?`<text x="${x.toFixed(1)}" y="${(y+13).toFixed(1)}" text-anchor="middle" font-size="11.5" fill="#8E8C83">came from</text>`:''}
+    </g>`;
+  });
+
+  document.getElementById("mapwrap").innerHTML = `
+    <svg id="mapsvg" width="100%" viewBox="0 0 374 400" role="img" aria-label="Verses related to ${ref}">
+      ${lines}
+      <g><rect x="${CX-70}" y="${CY-21}" width="140" height="42" rx="3" fill="#F0E1DC" stroke="#9C3627" stroke-width="1.5"/>
+      <text x="${CX}" y="${CY+5}" text-anchor="middle" font-size="17" font-weight="600" fill="#23221E">${short(ref)}</text></g>
+      ${marks}
+    </svg>`;
+
+  document.getElementById("mlist").innerHTML = nodes.map(n => `
+    <div class="row" onclick="go('${n.id}')">
+      <div class="r-body">
+        <p class="r-ref">${n.id}</p>
+        <p class="r-why">${n.why}</p>
+      </div>
+      <span class="r-kind"><i style="background:${KIND[n.k]}"></i>${n.k}</span>
+    </div>`).join("");
+}
+
+render();
+document.addEventListener("keydown", e => {
+  if(e.key === "Enter" && e.target.getAttribute("role") === "button") e.target.dispatchEvent(new Event("click"));
+});
+</script>
+</body>
+</html>
