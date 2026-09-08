@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nightfall — landing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0D1117; --sur:#151B24; --sur2:#1C2430;
+  --line:rgba(255,255,255,.09); --line2:rgba(255,255,255,.18);
+  --tx:#F5F0E6; --tx2:#A29A8E; --tx3:#7C7466;
+  --gold:#E0A458; --blue:#6D8FD8; --sage:#7FA88C; --rose:#C97D8E;
+  --serif:"Fraunces",Georgia,serif; --sans:"IBM Plex Sans",system-ui,sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:#08090C;color:var(--tx);font-family:var(--sans);
+  padding:44px 16px 88px;display:flex;flex-direction:column;align-items:center}
+.intro{max-width:390px;width:100%;margin-bottom:20px}
+.intro h1{font-family:var(--serif);font-size:30px;font-weight:600;margin:0 0 6px}
+.intro p{font-size:13.5px;line-height:1.6;color:var(--tx2);margin:0}
+
+.frame{width:390px;max-width:100%;height:800px;border-radius:30px;overflow:hidden;
+  position:relative;display:flex;flex-direction:column;background:var(--bg);
+  border:1px solid var(--line)}
+.glow{position:absolute;top:-160px;left:50%;transform:translateX(-50%);
+  width:490px;height:420px;pointer-events:none;z-index:0;
+  background:radial-gradient(closest-side,rgba(224,164,88,.30),rgba(224,164,88,.05) 55%,transparent);filter:blur(8px)}
+.glow2{position:absolute;bottom:120px;left:-100px;width:320px;height:320px;pointer-events:none;z-index:0;
+  background:radial-gradient(closest-side,rgba(109,143,216,.17),transparent);filter:blur(16px)}
+
+.top{position:relative;z-index:1;flex:none;padding:38px 24px 0}
+.greet{font-size:10.5px;letter-spacing:.15em;color:var(--tx3);margin:0 0 11px}
+.top h2{font-family:var(--serif);font-size:32px;line-height:1.09;font-weight:600;margin:0 0 20px;letter-spacing:-.01em}
+.top h2 em{font-style:italic;color:var(--gold)}
+.search{display:flex;align-items:center;gap:11px;padding:14px 16px;border-radius:14px;
+  background:rgba(255,255,255,.05);border:1px solid rgba(224,164,88,.26);
+  box-shadow:0 0 36px rgba(224,164,88,.10);transition:border-color .2s,box-shadow .2s}
+.search:focus-within{border-color:rgba(224,164,88,.55);box-shadow:0 0 44px rgba(224,164,88,.18)}
+.search input{flex:1;background:none;border:none;outline:none;min-width:0;
+  font-family:var(--serif);font-size:16px;color:var(--tx)}
+.search input::placeholder{color:var(--tx3)}
+
+.body{position:relative;z-index:1;flex:1;overflow-y:auto;overscroll-behavior:contain;padding-top:24px}
+.body::-webkit-scrollbar{display:none}
+.lh{display:flex;align-items:center;gap:10px;padding:0 24px;margin:0 0 12px}
+.lh b{font-size:10.5px;letter-spacing:.14em;color:var(--tx3);font-weight:500}
+.lh i{flex:1;height:1px;background:var(--line);font-style:normal}
+.lh a{font-size:10.5px;color:var(--tx3);text-decoration:none;letter-spacing:.06em}
+.lh a:hover{color:var(--gold)}
+
+/* one card, three sizes */
+.c{position:relative;overflow:hidden;cursor:pointer;background:var(--sur);
+  border:1px solid var(--line);border-radius:16px;
+  display:flex;flex-direction:column;justify-content:flex-end;gap:5px;
+  transition:transform .2s,border-color .2s,background .2s}
+.c:hover{transform:translateY(-2px);border-color:var(--line2);background:var(--sur2)}
+.c .halo{position:absolute;top:-46px;right:-46px;width:124px;height:124px;border-radius:50%;
+  filter:blur(30px);opacity:.42;transition:opacity .25s}
+.c:hover .halo{opacity:.7}
+.c .w{font-family:var(--serif);font-weight:600;line-height:1.08;position:relative}
+.c .m{font-size:10.5px;color:var(--tx3);position:relative}
+
+.c-hero{padding:20px 18px;min-height:118px}
+.c-hero .w{font-size:25px;font-style:italic}
+.c-tile{padding:16px 15px;min-height:104px}
+.c-tile .w{font-size:21px}
+.c-rail{flex:none;width:138px;min-height:104px;padding:15px 14px;scroll-snap-align:start}
+.c-rail .w{font-size:20px}
+
+.picks{display:grid;grid-template-columns:1fr 1fr;gap:11px;padding:0 24px 26px}
+.picks .c-hero{grid-column:1 / -1;border-color:rgba(224,164,88,.34);
+  background:linear-gradient(155deg,rgba(224,164,88,.11),transparent 65%),var(--sur)}
+.picks .c-hero .w{color:var(--gold)}
+
+.rail{display:flex;gap:11px;overflow-x:auto;padding:0 24px 26px;scroll-snap-type:x mandatory}
+.rail::-webkit-scrollbar{display:none}
+
+.bar{position:relative;z-index:1;flex:none;padding:15px 24px;border-top:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;cursor:pointer}
+.bar div p{margin:0;font-size:10px;letter-spacing:.14em;color:var(--tx3)}
+.bar div b{font-family:var(--serif);font-size:19px;font-weight:600;display:block;margin-top:3px}
+.bar span{font-size:11px;color:var(--tx3)}
+.nav{position:relative;z-index:1;flex:none;display:flex;border-top:1px solid var(--line)}
+.nav div{flex:1;text-align:center;padding:12px 0 19px;font-size:10.5px;color:#6E6862;
+  display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer}
+.nav div:first-child{color:var(--gold)}
+.nav svg{stroke:currentColor}
+
+.foot{max-width:390px;width:100%;margin-top:22px;font-size:13px;line-height:1.75;color:var(--tx2)}
+.foot b{color:var(--tx);font-weight:500}
+</style>
+</head>
+<body>
+
+<div class="intro">
+  <h1>Nightfall</h1>
+  <p>Curated tiles at the top, catalog rails below. Swipe the shelves sideways.</p>
+</div>
+
+<div class="frame">
+  <div class="glow"></div><div class="glow2"></div>
+
+  <div class="top">
+    <p class="greet">TUESDAY MORNING</p>
+    <h2>What do you want to <em>study</em> today?</h2>
+    <div class="search">
+      <svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="#7C7466" stroke-width="1.5"><circle cx="8" cy="8" r="5.5"/><path d="m12.5 12.5 3.5 3.5" stroke-linecap="round"/></svg>
+      <input id="q" placeholder="A verse, a word, a question" aria-label="Search">
+    </div>
+  </div>
+
+  <div class="body">
+
+    <div class="lh"><b>THIS WEEK</b><i></i></div>
+    <div class="picks">
+      <div class="c c-hero" onclick="fill('Why does Job suffer?')">
+        <div class="halo" style="background:var(--gold)"></div>
+        <div class="w">Why does Job suffer?</div>
+        <div class="m">A question, not a verse. Start anywhere.</div>
+      </div>
+      <div class="c c-tile" onclick="fill('Fellowship')">
+        <div class="halo" style="background:var(--gold)"></div>
+        <div class="w">Fellowship</div><div class="m">topic · 19 uses</div>
+      </div>
+      <div class="c c-tile" onclick="fill('Ruth')">
+        <div class="halo" style="background:var(--rose)"></div>
+        <div class="w">Ruth</div><div class="m">person &amp; book</div>
+      </div>
+    </div>
+
+    <div class="lh"><b>TOPICS</b><i></i><a href="#" onclick="return false">ALL 84</a></div>
+    <div class="rail">
+      <div class="c c-rail" onclick="fill('Covenant')"><div class="halo" style="background:var(--gold)"></div><div class="w">Covenant</div><div class="m">the spine of it</div></div>
+      <div class="c c-rail" onclick="fill('Exile')"><div class="halo" style="background:var(--gold)"></div><div class="w">Exile</div><div class="m">42 passages</div></div>
+      <div class="c c-rail" onclick="fill('Grace')"><div class="halo" style="background:var(--gold)"></div><div class="w">Grace</div><div class="m">topic</div></div>
+      <div class="c c-rail" onclick="fill('Justice')"><div class="halo" style="background:var(--gold)"></div><div class="w">Justice</div><div class="m">topic</div></div>
+    </div>
+
+    <div class="lh"><b>BOOKS</b><i></i><a href="#" onclick="return false">ALL 66</a></div>
+    <div class="rail">
+      <div class="c c-rail" onclick="fill('Acts')"><div class="halo" style="background:var(--blue)"></div><div class="w">Acts</div><div class="m">28 chapters</div></div>
+      <div class="c c-rail" onclick="fill('Psalms')"><div class="halo" style="background:var(--blue)"></div><div class="w">Psalms</div><div class="m">150 poems</div></div>
+      <div class="c c-rail" onclick="fill('Isaiah')"><div class="halo" style="background:var(--blue)"></div><div class="w">Isaiah</div><div class="m">66 chapters</div></div>
+      <div class="c c-rail" onclick="fill('Romans')"><div class="halo" style="background:var(--blue)"></div><div class="w">Romans</div><div class="m">16 chapters</div></div>
+    </div>
+
+    <div class="lh"><b>PEOPLE</b><i></i><a href="#" onclick="return false">ALL 3,000</a></div>
+    <div class="rail">
+      <div class="c c-rail" onclick="fill('Paul')"><div class="halo" style="background:var(--rose)"></div><div class="w">Paul</div><div class="m">13 letters</div></div>
+      <div class="c c-rail" onclick="fill('Esther')"><div class="halo" style="background:var(--rose)"></div><div class="w">Esther</div><div class="m">person</div></div>
+      <div class="c c-rail" onclick="fill('David')"><div class="halo" style="background:var(--rose)"></div><div class="w">David</div><div class="m">person</div></div>
+      <div class="c c-rail" onclick="fill('Barnabas')"><div class="halo" style="background:var(--rose)"></div><div class="w">Barnabas</div><div class="m">person</div></div>
+    </div>
+
+    <div class="lh"><b>QUESTIONS</b><i></i></div>
+    <div class="rail">
+      <div class="c c-rail" style="width:184px" onclick="fill('What is the kingdom of God?')"><div class="halo" style="background:var(--sage)"></div><div class="w" style="font-size:17px">What is the kingdom of God?</div></div>
+      <div class="c c-rail" style="width:184px" onclick="fill('Who wrote Hebrews?')"><div class="halo" style="background:var(--sage)"></div><div class="w" style="font-size:17px">Who wrote Hebrews?</div></div>
+      <div class="c c-rail" style="width:184px" onclick="fill('Did the early church share everything?')"><div class="halo" style="background:var(--sage)"></div><div class="w" style="font-size:16px">Did the early church share everything?</div></div>
+    </div>
+
+  </div>
+
+  <div class="bar" onclick="fill('Acts 2:42')">
+    <div><p>CONTINUE</p><b>Acts 2:42</b></div>
+    <span>fellowship, four devotions</span>
+  </div>
+
+  <div class="nav">
+    <div><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke-width="1.4"><circle cx="9" cy="9" r="6"/><path d="m13.5 13.5 4 4" stroke-linecap="round"/></svg>Study</div>
+    <div><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke-width="1.4"><path d="M3 4h5a2 2 0 0 1 2 2v10a2 2 0 0 0-2-2H3zM17 4h-5a2 2 0 0 0-2 2v10a2 2 0 0 1 2-2h5z"/></svg>Read</div>
+    <div><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke-width="1.4"><path d="M10 3v14M3 10h14" stroke-linecap="round"/></svg>Notes</div>
+    <div><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke-width="1.4"><circle cx="7" cy="7" r="3"/><circle cx="14" cy="8" r="2.4"/><path d="M2 17c0-2.8 2.2-4.5 5-4.5s5 1.7 5 4.5M12.5 17c0-2 1-3.4 2.8-3.6"/></svg>Groups</div>
+  </div>
+</div>
+
+<p class="foot">
+  <b>One card, three sizes.</b> The hero, the tiles and the rail cards are the same component with
+  different padding and type scale, which is what keeps the mix from reading as two designs.
+  Color codes the kind of thing rather than decorating: gold for topics, blue for books,
+  rose for people, sage for questions.
+</p>
+
+<script>
+function fill(t){ const q = document.getElementById("q"); q.value = t; q.focus(); }
+</script>
+</body>
+</html>
