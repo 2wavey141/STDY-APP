@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nightfall — orbit v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0B0F15; --sur:#151B24; --sur2:#1C2430;
+  --line:rgba(255,255,255,.09);
+  --tx:#F5F0E6; --tx2:#A29A8E; --tx3:#7C7466;
+  --gold:#E0A458; --blue:#6D8FD8; --sage:#7FA88C; --rose:#C97D8E;
+  --violet:#9B8AD4; --steel:#8A98A8;
+  --serif:"Fraunces",Georgia,serif; --sans:"IBM Plex Sans",system-ui,sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:#07080B;color:var(--tx);font-family:var(--sans);
+  padding:44px 16px 88px;display:flex;flex-direction:column;align-items:center}
+.intro{max-width:390px;width:100%;margin-bottom:20px}
+.intro h1{font-family:var(--serif);font-size:30px;font-weight:600;margin:0 0 6px}
+.intro p{font-size:13.5px;line-height:1.6;color:var(--tx2);margin:0}
+
+.frame{width:390px;max-width:100%;height:840px;border-radius:30px;overflow:hidden;
+  position:relative;display:flex;flex-direction:column;background:var(--bg);border:1px solid var(--line)}
+
+.hd{position:relative;z-index:6;flex:none;padding:20px 22px 14px;border-bottom:1px solid var(--line)}
+.crumb{font-size:10.5px;letter-spacing:.13em;color:var(--tx3);margin:0 0 10px;cursor:pointer}
+.crumb:hover{color:var(--gold)}
+.vs{font-family:var(--serif);font-size:17px;line-height:1.42;margin:0;color:var(--tx2)}
+
+/* ===== ORBIT ===== */
+.scene{position:relative;flex:none;height:306px;perspective:1000px;perspective-origin:50% 42%;
+  touch-action:pan-y;cursor:grab;overflow:hidden}
+.scene:active{cursor:grabbing}
+.dust{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.dust i{position:absolute;width:2px;height:2px;border-radius:50%;background:#F5F0E6}
+@keyframes twinkle{0%,100%{opacity:.05}50%{opacity:.38}}
+.aura{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);width:330px;height:330px;
+  border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,rgba(224,164,88,.17),rgba(224,164,88,.04) 45%,transparent 70%);filter:blur(12px)}
+.ring{position:absolute;inset:0;transform-style:preserve-3d;transform:rotateX(-57deg)}
+
+.path{position:absolute;left:50%;top:42%;width:290px;height:290px;margin:-145px 0 0 -145px;
+  border-radius:50%;border:1px solid rgba(224,164,88,.14)}
+
+.core{position:absolute;left:50%;top:42%;width:124px;height:124px;margin:-62px 0 0 -62px;
+  border-radius:50%;transform:rotateX(57deg);pointer-events:none;z-index:100;
+  background:radial-gradient(circle at 50% 34%,rgba(224,164,88,.28),rgba(224,164,88,.07) 58%,transparent),#131A24;
+  border:1.5px solid rgba(224,164,88,.5);box-shadow:0 0 56px rgba(224,164,88,.26);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.core b{font-family:var(--serif);font-size:21px;font-weight:600;color:var(--gold)}
+.core small{font-size:9px;letter-spacing:.11em;color:var(--tx3);margin-top:4px}
+
+.card{position:absolute;left:50%;top:42%;width:98px;height:86px;margin:-43px 0 0 -49px;
+  border-radius:24px;border:1px solid;background:#141A23;padding:9px;cursor:pointer;overflow:hidden;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  transition:border-width .2s,box-shadow .35s,background .3s}
+.card .hl{position:absolute;inset:-40% -40% 40% -40%;border-radius:50%;filter:blur(18px);
+  opacity:.24;transition:opacity .35s}
+.card b{position:relative;font-family:var(--serif);font-size:13.5px;font-weight:600;line-height:1.1}
+.card small{position:relative;font-size:8.5px;letter-spacing:.09em;color:var(--tx3);margin-top:3px}
+.card[data-front="true"]{border-width:1.5px;background:#1A2230}
+.card[data-front="true"] .hl{opacity:.72}
+
+.dots{position:relative;z-index:6;flex:none;display:flex;justify-content:center;gap:7px;padding:0 0 14px}
+.dots i{display:block;width:5px;height:5px;border-radius:50%;background:#2C3440;
+  transition:width .28s,background .28s;cursor:pointer}
+.dots i[data-on="true"]{width:20px;border-radius:3px}
+
+.tray{position:relative;z-index:6;flex:1;border-top:1px solid var(--line);
+  background:#080C11;overflow-y:auto;overscroll-behavior:contain}
+.tray::-webkit-scrollbar{display:none}
+.th{position:sticky;top:0;z-index:3;background:#080C11;padding:15px 22px 12px;
+  border-bottom:1px solid var(--line);display:flex;align-items:center;gap:9px}
+.th .d{width:8px;height:8px;border-radius:50%;flex:none}
+.th b{font-family:var(--serif);font-size:18px;font-weight:600}
+.th em{font-style:normal;font-size:10px;letter-spacing:.1em;color:var(--tx3);margin-left:auto}
+
+.it{border-bottom:1px solid var(--line)}
+.it-t{width:100%;text-align:left;background:none;border:none;cursor:pointer;font-family:var(--sans);
+  padding:13px 22px;display:flex;gap:11px;align-items:baseline;color:var(--tx)}
+.it-t span{flex:1;font-family:var(--serif);font-size:16.5px;line-height:1.28}
+.it-t span.gk{font-size:21px}
+.it-t i{font-style:normal;font-size:15px;color:var(--tx3);flex:none;transition:transform .2s}
+.it[data-open="true"] .it-t i{transform:rotate(45deg)}
+.it[data-open="true"] .it-t span{color:var(--gold)}
+.it-b{display:none;padding:0 22px 18px}
+.it[data-open="true"] .it-b{display:block}
+.it-b p{font-family:var(--serif);font-size:16px;line-height:1.6;color:var(--tx2);margin:0 0 11px}
+.it-b p:last-of-type{margin-bottom:0}
+.it-b strong{color:var(--tx);font-weight:600}
+.who{display:inline-flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.07em;
+  margin-bottom:9px;padding:4px 9px;border-radius:100px}
+.who span{width:6px;height:6px;border-radius:50%}
+.who.s{color:var(--gold);background:rgba(224,164,88,.10);border:1px solid rgba(224,164,88,.22)}
+.who.s span{background:var(--gold)}
+.who.g{color:var(--violet);background:rgba(155,138,212,.11);border:1px solid rgba(155,138,212,.26)}
+.who.g span{background:var(--violet)}
+.gen{background:rgba(155,138,212,.06);border-left:2px solid rgba(155,138,212,.4);
+  padding:13px 15px;border-radius:0 8px 8px 0}
+.gen p{color:#CFC8DE}
+.src{font-size:10.5px;color:var(--tx3);margin-top:11px}
+.plate{height:118px;border-radius:10px;border:1px solid var(--line);margin-bottom:11px;
+  background:linear-gradient(150deg,var(--sur2),var(--sur));display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:7px;color:var(--tx3)}
+.plate b{font-family:var(--sans);font-size:11px;font-weight:400}
+
+.foot{max-width:390px;width:100%;margin-top:22px;font-size:13px;line-height:1.75;color:var(--tx2)}
+.foot b{color:var(--tx);font-weight:500}
+</style>
+</head>
+<body>
+
+<div class="intro">
+  <h1>Verse visualizer</h1>
+  <p>The verse holds the middle. Facets orbit around it — drag to turn.</p>
+</div>
+
+<div class="frame">
+  <div class="hd">
+    <p class="crumb">← FELLOWSHIP · 19 USES</p>
+    <p class="vs">They devoted themselves to the apostles' teaching and to the fellowship, to the breaking of bread and to prayer.</p>
+  </div>
+
+  <div class="scene" id="scene">
+    <div class="aura"></div>
+    <div class="dust" id="dust"></div>
+    <div class="ring" id="ring">
+      <div class="path"></div>
+      <div class="core"><b>Acts 2:42</b><small>JERUSALEM · AD 30</small></div>
+    </div>
+  </div>
+
+  <div class="dots" id="dots"></div>
+  <div class="tray" id="tray"></div>
+</div>
+
+<p class="foot">
+  <b>The ring is tilted almost flat</b>, so facets sweep in front of the verse and pass behind it
+  rather than crowding it side by side. Depth does the separating that spacing couldn't.
+</p>
+
+<script>
+const F = [
+  {id:"hist", label:"Where and when", sub:"SETTING", c:"#6D8FD8", items:[
+    {t:"The hours of prayer", src:"Mishnah, Tamid 5; Josephus, <i>Antiquities</i> 14.65", b:["Jewish practice fixed prayer at set times through the day, including the hour of the afternoon offering. Acts 3:1 has Peter and John going up to the temple at the ninth hour."]},
+    {t:"Houses, not buildings", src:"Avigad, <i>Discovering Jerusalem</i>; Jewish Quarter excavations", b:["There were no church buildings. Acts 2:46 has them in the temple courts by day and breaking bread at home. A well-off Jerusalem house could hold thirty or forty in its courtyard."]},
+    {t:"How bread was opened", src:"Second Temple table practice", b:["The head of a household took the loaf, blessed God, tore it and passed it round. Flat loaves were torn, never cut. The gesture was daily and unremarkable."]},
+    {t:"Weeks after Pentecost", src:"Acts 2:1, 2:41", b:["Three thousand were added at Pentecost. This sentence describes what that crowd settled into afterwards."]}
+  ]},
+  {id:"lit", label:"Where it sits", sub:"STRUCTURE", c:"#7FA88C", items:[
+    {t:"One of three summaries", src:"Acts 2:42-47; 4:32-35; 5:12-16", b:["Luke stops the narrative three times to describe the community as a whole. The repeated notes are shared possessions, shared meals, and growth."]},
+    {t:"It answers the sermon", src:"Acts 2:14-41", b:["The verse sits directly after Peter's Pentecost sermon and the response to it. It is what responding looked like."]},
+    {t:"Volume two of one work", src:"Luke 1:1-4; Acts 1:1", b:["Luke and Acts were written to the same reader as a single project. Anything Luke does in the gospel he may be echoing here deliberately."]},
+    {t:"Four items, one verb", src:"MorphGNT / SBLGNT", b:["The four datives all hang off a single periphrastic imperfect. Grammatically this is one sustained habit described four ways."]}
+  ]},
+  {id:"word", label:"The words", sub:"GREEK", c:"#E0A458", items:[
+    {t:"προσκαρτεροῦντες", gk:1, src:"Strong's G4342 · BDAG 881", b:["<strong>proskarterountes</strong> — to persist in, to attend constantly. Ten uses in the New Testament, six in Acts. Paired with ἦσαν it means they kept it up, continuously, over time."]},
+    {t:"κοινωνίᾳ", gk:1, src:"Strong's G2842 · BDAG 552", b:["<strong>koinōnia</strong> — from κοινός, common. Nineteen uses. Covers participation in something, partnership in a shared work, and literally a cash contribution."]},
+    {t:"κλάσει τοῦ ἄρτου", gk:1, src:"Strong's G2800", b:["<strong>klasis</strong> — a breaking. Only two uses in the entire New Testament, and Luke wrote both: here and Luke 24:35."]},
+    {t:"ταῖς προσευχαῖς", gk:1, src:"Strong's G4335", b:["<strong>proseuchai</strong> — prayers, plural, with the article. A known set of prayers, not prayer as a general activity."]}
+  ]},
+  {id:"see", label:"See it", sub:"PLACES", c:"#C97D8E", items:[
+    {t:"Southern steps of the Temple Mount", img:"Herodian stairs, still in place", src:"Wikimedia Commons · public domain", b:["The main pilgrim approach to the temple courts. If they were going up at the hour of prayer, they were going up these."]},
+    {t:"The Burnt House", img:"Priestly house, Jewish Quarter excavation", src:"Wikimedia Commons · CC BY-SA 4.0", b:["A first-century Jerusalem house destroyed in AD 70 and excavated with its rooms intact."]},
+    {t:"Stone oven and bread stamp", img:"Household baking equipment, first century", src:"Israel Museum · open content", b:["Bread was baked at home daily in flat loaves. Breaking describes how you open a loaf, not a ritual gesture."]},
+    {t:"Model of the Second Temple", img:"Scale reconstruction, Israel Museum", src:"Wikimedia Commons · CC BY-SA 3.0", b:["Useful for seeing how the courts, the steps and the city fit together."]}
+  ]},
+  {id:"next", label:"Read next", sub:"PASSAGES", c:"#9B8AD4", items:[
+    {t:"Luke 24:35", src:"same author, same phrase", b:["The road to Emmaus. He was known to them in the breaking of the bread. The only other use of that noun anywhere."]},
+    {t:"Acts 4:32", src:"same author, same subject", b:["The second summary. One heart and soul, everything in common."]},
+    {t:"1 Corinthians 10:16", src:"same word", b:["Paul uses κοινωνία of the cup and the bread. The closest bridge between this verse and the Lord's Supper."]},
+    {t:"Acts 6:4", src:"same verb", b:["The apostles apply the church's own verb to themselves once the work has to be divided."]}
+  ]},
+  {id:"open", label:"Still argued", sub:"OPEN", c:"#8A98A8", items:[
+    {t:"Is the breaking of bread the Lord's Supper?", gen:1, src:"Bock, <i>Acts</i> BECNT · Keener, <i>Acts</i> vol. 1 · Barrett, ICC 1", b:["Darrell Bock reads it as a shared meal with eucharistic overtones. Craig Keener leans toward ordinary table fellowship, pointing to Acts 2:46 and 27:35 where the same language covers plain eating. C. K. Barrett holds that Luke does not distinguish the two at this stage.","The phrase alone will not settle it. Which way you lean usually tracks what you already think about how the eucharist began."]},
+    {t:"Was the sharing of goods permanent?", gen:1, src:"Bruce, <i>Acts</i> NICNT · Dunn, <i>Beginning from Jerusalem</i>", b:["F. F. Bruce reads Acts 4:34 as property sold when needs arose rather than a standing common purse. James Dunn treats it as a Jerusalem-specific arrangement that Paul's collection later had to relieve."]},
+    {t:"Which prayers?", gen:1, src:"Keener, <i>Acts</i> vol. 1 · Jeremias, <i>The Prayers of Jesus</i>", b:["The article suggests a fixed set. Candidates include the Jewish hours of prayer, the Amidah, or an early Christian pattern that has left no direct evidence.","There is no consensus, and anyone who tells you there is has picked a side."]}
+  ]}
+];
+
+const R = 145, TILT = 57, N = F.length, STEP = 360 / N;
+const scene = document.getElementById("scene"), ring = document.getElementById("ring"), tray = document.getElementById("tray");
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+let dd = "";
+for(let i = 0; i < 32; i++){
+  const dur = (4 + Math.random() * 6).toFixed(1);
+  dd += `<i style="left:${(Math.random()*100).toFixed(1)}%;top:${(Math.random()*100).toFixed(1)}%;opacity:.1;
+    ${reduce ? "" : `animation:twinkle ${dur}s ease-in-out ${(Math.random()*5).toFixed(1)}s infinite`}"></i>`;
+}
+document.getElementById("dust").innerHTML = dd;
+
+F.forEach((f, i) => {
+  const el = document.createElement("div");
+  el.className = "card"; el.id = "c-" + i;
+  el.style.borderColor = f.c;
+  el.setAttribute("role","button"); el.setAttribute("tabindex","0");
+  el.innerHTML = `<div class="hl" style="background:${f.c}"></div><b style="color:${f.c}">${f.label}</b><small>${f.sub}</small>`;
+  el.addEventListener("click", () => { if(!moved) go(i); });
+  el.addEventListener("keydown", e => { if(e.key === "Enter" || e.key === " "){ e.preventDefault(); go(i); } });
+  ring.appendChild(el);
+});
+
+document.getElementById("dots").innerHTML = F.map((f,i) => `<i id="d-${i}" onclick="go(${i})"></i>`).join("");
+
+let pos = 0, target = 0, drag = false, lastX = 0, moved = false, cur = -1;
+
+function frame(){
+  pos += (target - pos) * 0.13;
+  F.forEach((f, i) => {
+    const a = (i - pos) * STEP;
+    const front = Math.cos(a * Math.PI / 180);
+    const el = document.getElementById("c-" + i);
+    el.style.transform = `rotateY(${a}deg) translateZ(${R}px) rotateY(${-a}deg) rotateX(${TILT}deg)`;
+    el.style.opacity = (0.16 + 0.84 * Math.pow((front + 1) / 2, 1.5)).toFixed(3);
+    el.style.zIndex = Math.round(100 + front * 60);
+    el.style.pointerEvents = front > 0.1 ? "auto" : "none";
+    const isF = front > 0.86;
+    el.dataset.front = isF;
+    el.style.boxShadow = isF ? `0 14px 44px ${f.c}4D` : "none";
+  });
+  const now = ((Math.round(pos) % N) + N) % N;
+  if(now !== cur){ cur = now; select(cur); }
+  requestAnimationFrame(frame);
+}
+frame();
+
+function go(i){
+  let want = i;
+  while(want - target > N / 2) want -= N;
+  while(target - want > N / 2) want += N;
+  target = want;
+}
+
+function select(i){
+  F.forEach((f, j) => {
+    const el = document.getElementById("d-" + j);
+    el.dataset.on = (i === j);
+    el.style.background = (i === j) ? f.c : "#2C3440";
+  });
+  drawTray(F[i]);
+}
+
+scene.addEventListener("pointerdown", e => { drag = true; moved = false; lastX = e.clientX; scene.setPointerCapture(e.pointerId); });
+scene.addEventListener("pointermove", e => {
+  if(!drag) return;
+  const dx = e.clientX - lastX; lastX = e.clientX;
+  if(Math.abs(dx) > 1) moved = true;
+  target -= dx / 62;
+});
+scene.addEventListener("pointerup", e => {
+  drag = false;
+  if(moved) target = Math.round(target);
+  scene.releasePointerCapture(e.pointerId);
+});
+scene.addEventListener("pointercancel", () => { drag = false; });
+
+function drawTray(f){
+  tray.innerHTML =
+    `<div class="th"><span class="d" style="background:${f.c}"></span><b>${f.label}</b><em>${f.items.length} ENTRIES</em></div>` +
+    f.items.map((it, i) => `
+      <div class="it" data-open="false" id="i-${i}">
+        <button class="it-t" onclick="flip(${i})"><span class="${it.gk ? 'gk' : ''}">${it.t}</span><i>+</i></button>
+        <div class="it-b">
+          ${it.img ? `<div class="plate"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.5"/><path d="m4 17 5-5 4 4 3-3 4 4"/></svg><b>${it.img}</b></div>` : ""}
+          ${it.gen
+            ? `<span class="who g"><span></span>WRITTEN BY THE MODEL</span><div class="gen">${it.b.map(p=>`<p>${p}</p>`).join("")}</div><p class="src">Positions summarised from ${it.src}</p>`
+            : `<span class="who s"><span></span>FROM SOURCE</span>${it.b.map(p=>`<p>${p}</p>`).join("")}<p class="src">${it.src}</p>`}
+        </div>
+      </div>`).join("");
+  tray.scrollTop = 0;
+}
+
+function flip(i){
+  const el = document.getElementById("i-" + i), open = el.dataset.open === "true";
+  document.querySelectorAll(".it").forEach(x => x.dataset.open = "false");
+  el.dataset.open = open ? "false" : "true";
+}
+</script>
+</body>
+</html>
