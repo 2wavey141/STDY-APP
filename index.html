@@ -6,71 +6,140 @@
 <title>Bible study visualizer — prototypes</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--ground:#D9D7CD;--page:#F3F2EC;--ink:#23221E;--soft:#63615A;--faint:#8E8C83;
-  --rule:#CDCABE;--madder:#9C3627;--wash:#F0E1DC;
-  --sans:"IBM Plex Sans",system-ui,sans-serif;--serif:"EB Garamond",Georgia,serif}
-*{box-sizing:border-box}
-body{margin:0;background:var(--ground);font-family:var(--sans);color:var(--ink);
-  padding:52px 20px 80px;display:flex;justify-content:center}
-.wrap{width:100%;max-width:560px}
-h1{font-family:var(--serif);font-size:38px;font-weight:600;margin:0 0 10px;letter-spacing:-.015em}
-.lede{font-family:var(--serif);font-size:19px;line-height:1.55;color:var(--soft);margin:0 0 8px;max-width:52ch}
-.stamp{font-size:12px;color:var(--faint);margin:0 0 34px}
+:root{
+  --bg:#0B0F15; --sur:#151B24; --sur2:#1C2430;
+  --line:rgba(255,255,255,.09); --line2:rgba(255,255,255,.18);
+  --tx:#F5F0E6; --tx2:#A29A8E; --tx3:#7C7466;
+  --gold:#E0A458; --violet:#9B8AD4;
+  --serif:"Fraunces",Georgia,serif; --sans:"IBM Plex Sans",system-ui,sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:#08090C;color:var(--tx);font-family:var(--sans);
+  padding:56px 20px 96px;display:flex;justify-content:center}
+.wrap{width:100%;max-width:600px;position:relative}
 
-.card{display:block;text-decoration:none;color:inherit;background:var(--page);
-  border:1px solid var(--rule);border-radius:4px;padding:20px 22px;margin-bottom:14px;
-  transition:border-color .15s,transform .15s}
-.card:hover{border-color:var(--madder);transform:translateY(-1px)}
-.card .n{font-size:11.5px;color:var(--faint);margin:0 0 4px}
-.card h2{font-family:var(--serif);font-size:23px;font-weight:600;margin:0 0 6px}
-.card p{font-size:14px;line-height:1.6;color:var(--soft);margin:0;max-width:50ch}
-.card .go{display:inline-block;margin-top:12px;font-size:13px;color:var(--madder)}
-.card.now{border-color:var(--madder);background:var(--wash)}
-.card.now .n{color:var(--madder)}
+.glow{position:absolute;top:-220px;left:50%;transform:translateX(-50%);
+  width:560px;height:440px;pointer-events:none;z-index:0;
+  background:radial-gradient(closest-side,rgba(224,164,88,.16),rgba(224,164,88,.03) 55%,transparent);filter:blur(10px)}
+.wrap > *{position:relative;z-index:1}
 
-.foot{margin-top:34px;padding-top:22px;border-top:1px solid var(--rule);
-  font-size:13.5px;line-height:1.7;color:var(--soft)}
-.foot b{font-weight:500;color:var(--ink)}
+h1{font-family:var(--serif);font-size:40px;font-weight:600;margin:0 0 12px;letter-spacing:-.015em;line-height:1.05}
+h1 em{font-style:italic;color:var(--gold)}
+.lede{font-family:var(--serif);font-size:19px;line-height:1.55;color:var(--tx2);margin:0 0 10px;max-width:52ch}
+.stamp{font-size:12px;color:var(--tx3);margin:0 0 38px}
+
+.lh{display:flex;align-items:center;gap:12px;margin:0 0 14px}
+.lh b{font-size:10.5px;letter-spacing:.14em;color:var(--tx3);font-weight:500}
+.lh i{flex:1;height:1px;background:var(--line);font-style:normal}
+
+.c{position:relative;overflow:hidden;display:block;text-decoration:none;color:inherit;
+  background:var(--sur);border:1px solid var(--line);border-radius:16px;
+  padding:22px 24px;margin-bottom:12px;
+  transition:transform .2s,border-color .2s,background .2s}
+.c:hover{transform:translateY(-2px);border-color:var(--line2);background:var(--sur2)}
+.c .halo{position:absolute;top:-52px;right:-52px;width:140px;height:140px;border-radius:50%;
+  filter:blur(32px);opacity:.34;transition:opacity .25s;background:var(--gold)}
+.c:hover .halo{opacity:.6}
+.c .n{font-size:10.5px;letter-spacing:.14em;color:var(--tx3);margin:0 0 7px;position:relative}
+.c h2{font-family:var(--serif);font-size:24px;font-weight:600;margin:0 0 7px;position:relative;line-height:1.15}
+.c p{font-size:14px;line-height:1.65;color:var(--tx2);margin:0;max-width:52ch;position:relative}
+.c .go{display:inline-block;margin-top:13px;font-size:12.5px;color:var(--gold);position:relative}
+
+.c.now{border-color:rgba(224,164,88,.34);
+  background:linear-gradient(155deg,rgba(224,164,88,.10),transparent 62%),var(--sur)}
+.c.now:hover{background:linear-gradient(155deg,rgba(224,164,88,.14),transparent 62%),var(--sur2)}
+.c.now .n{color:var(--gold)}
+
+.past{margin-top:40px}
+.past .c{background:transparent;padding:18px 22px}
+.past .c:hover{background:var(--sur)}
+.past .c h2{font-size:20px}
+.past .c .halo{display:none}
+.past .c p{font-size:13.5px}
+
+.foot{margin-top:44px;padding-top:24px;border-top:1px solid var(--line);
+  font-size:13.5px;line-height:1.75;color:var(--tx2)}
+.foot b{font-weight:500;color:var(--tx)}
 .foot ul{margin:10px 0 0;padding-left:18px}
-.foot li{margin-bottom:6px}
+.foot li{margin-bottom:7px}
+.key{display:inline-block;width:8px;height:8px;border-radius:50%;vertical-align:middle;
+  margin:0 5px 2px 0}
+.key.g{background:var(--gold)} .key.v{background:var(--violet)}
 </style>
 </head>
 <body>
 <div class="wrap">
+  <div class="glow"></div>
 
-  <h1>A visualizer for deep Bible study</h1>
-  <p class="lede">Three working prototypes, in the order they were designed. Each one is a phone screen you can tap through. Everything is built around a single verse, Acts 2:42.</p>
-  <p class="stamp">Interface prototypes only. No real data behind them yet.</p>
+  <h1>A visualizer for <em>deep</em> Bible study</h1>
+  <p class="lede">One subject at the centre, six facets orbiting it: where and when it happened, what the words are doing, what you can look at, and where scholars still disagree. Each prototype is a phone screen you can tap through.</p>
+  <p class="stamp">Interface prototypes only. No real data behind them yet, and every citation is an unverified placeholder.</p>
 
-  <a class="card now" href="v3-visualizer.html">
-    <p class="n">Latest</p>
+  <div class="lh"><b>CURRENT — NIGHTFALL</b><i></i></div>
+
+  <a class="c now" href="nightfall-orbit-v2.html">
+    <div class="halo"></div>
+    <p class="n">VERSE</p>
     <h2>Verse visualizer</h2>
-    <p>One verse at the center and six bubbles around it: setting, structure, the Greek words, things you can look at, where to read next, and the questions scholars have not settled. Tap a bubble and it rotates to the top.</p>
+    <p>Acts 2:42 holds the middle while six facets orbit on a ring tilted nearly flat, so they sweep in front of the verse and pass behind it. Drag to spin, and it snaps on release. The tray below follows whichever card is at the front.</p>
     <span class="go">Open</span>
   </a>
 
-  <a class="card" href="v2-two-tier.html">
-    <p class="n">Second pass</p>
-    <h2>One verse, two depths</h2>
-    <p>A plain reading page on the first tap, and a map of related passages on the second. Side by side, to show that the depth is optional. Sourced facts are marked in red, model-written interpretation in blue.</p>
+  <a class="c now" href="nightfall-topic.html">
+    <div class="halo"></div>
+    <p class="n">TOPIC</p>
+    <h2>Topic view</h2>
+    <p>Fellowship, or κοινωνία. The same orbit around a different kind of subject: three facets carry over from the verse view and three are new. Where and when, see it, and still argued never move.</p>
     <span class="go">Open</span>
   </a>
 
-  <a class="card" href="v1-passage-map.html">
-    <p class="n">First pass</p>
-    <h2>Word study into a map</h2>
-    <p>Starts from a Greek word study, grouped by sense rather than canonical order, and opens into a map of semantically nearby verses. Kept here because the sense-grouping idea is worth arguing about.</p>
+  <a class="c now" href="nightfall-landing.html">
+    <div class="halo"></div>
+    <p class="n">LANDING</p>
+    <h2>Discovery</h2>
+    <p>Where a session starts. Search at the top, a few hand-edited tiles under it, then catalog rails that scroll sideways. Curated work carries the voice; the rails do the scale.</p>
     <span class="go">Open</span>
   </a>
+
+  <div class="past">
+    <div class="lh"><b>EARLIER PASSES</b><i></i></div>
+
+    <a class="c" href="v3-visualizer.html">
+      <p class="n">THIRD PASS · LIGHT THEME</p>
+      <h2>Verse visualizer, flat</h2>
+      <p>The six facets before the orbit tilted. Tap a bubble and it rotates to the top. Superseded, but it is the clearest record of how the facet set settled.</p>
+      <span class="go">Open</span>
+    </a>
+
+    <a class="c" href="v2-two-tier.html">
+      <p class="n">SECOND PASS · LIGHT THEME</p>
+      <h2>One verse, two depths</h2>
+      <p>A plain reading page on the first tap, a map of related passages on the second, shown side by side to argue that the depth is optional. The first sketch of the trust split, in red and blue.</p>
+      <span class="go">Open</span>
+    </a>
+
+    <a class="c" href="v1-passage-map.html">
+      <p class="n">FIRST PASS · LIGHT THEME</p>
+      <h2>Word study into a map</h2>
+      <p>Starts from a Greek word study grouped by sense rather than canonical order, then opens into a map of semantically nearby verses. Kept because the sense-grouping idea is still worth arguing about.</p>
+      <span class="go">Open</span>
+    </a>
+  </div>
 
   <div class="foot">
-    <b>What to look at.</b>
+    <b>How to read the colours.</b>
     <ul>
-      <li>Whether you would tap the second screen at all, or stop at the first.</li>
-      <li>Whether the map tells you anything a ranked list wouldn't.</li>
-      <li>Whether the split between sourced facts and model interpretation reads clearly without being explained.</li>
+      <li><span class="key g"></span><b>Gold</b> is retrieved — a lexicon, a morphology database, a cross-reference set, a named commentary. Cited and checkable.</li>
+      <li><span class="key v"></span><b>Violet</b> is written by the model, always reasoned from the gold above it, never floating free.</li>
+    </ul>
+    <p style="margin:18px 0 0"><b>What to look at.</b></p>
+    <ul>
+      <li>Whether you would tap past the reading page at all, or stop at the first screen.</li>
+      <li>Whether the orbit tells you anything a ranked list wouldn't.</li>
+      <li>Whether the split between sourced fact and model interpretation reads clearly without being explained.</li>
+      <li>Whether <i>still argued</i> — naming the positions instead of flattening them into one answer — is the reason you would come back.</li>
     </ul>
   </div>
 
