@@ -75,9 +75,23 @@ h1 em{font-style:italic;color:var(--gold)}
 
   <h1>A visualizer for <em>deep</em> Bible study</h1>
   <p class="lede">One subject at the centre, six facets orbiting it: where and when it happened, what the words are doing, what you can look at, and where scholars still disagree. Each prototype is a phone screen you can tap through.</p>
-  <p class="stamp">Interface prototypes only. No real data behind them yet, and every citation is an unverified placeholder.</p>
+  <p class="stamp">One screen runs on real data; the rest are interface prototypes whose citations are unverified placeholders.</p>
 
-  <div class="lh"><b>CURRENT — NIGHTFALL</b><i></i></div>
+  <div class="lh"><b>RUNNING ON REAL DATA</b><i></i></div>
+
+  <a class="c now" href="verse.html">
+    <div class="halo"></div>
+    <p class="n">LIVE · ACTS 2:42</p>
+    <h2>Verse visualizer</h2>
+    <p>The orbit reading real scripture in four translations, with a working <i>Still argued</i>:
+    five named commentators, three positions, and a flat contradiction between Gill and
+    Jamieson-Fausset-Brown about whether "the breaking of bread" is the Lord's Supper. Open
+    <i>check the source</i> on any quote to see it highlighted inside that commentator's full
+    note. The other five facets are still placeholder copy and are marked as such.</p>
+    <span class="go">Open</span>
+  </a>
+
+  <div class="lh" style="margin-top:34px"><b>DESIGN PROTOTYPES — NIGHTFALL</b><i></i></div>
 
   <a class="c now" href="nightfall-orbit-v2.html">
     <div class="halo"></div>
@@ -133,6 +147,7 @@ h1 em{font-style:italic;color:var(--gold)}
     <ul>
       <li><span class="key g"></span><b>Gold</b> is retrieved — a lexicon, a morphology database, a cross-reference set, a named commentary. Cited and checkable.</li>
       <li><span class="key v"></span><b>Violet</b> is written by the model, always reasoned from the gold above it, never floating free.</li>
+      <li><span class="key" style="background:#C9765A"></span><b>Rust</b>, on the live screen only, marks placeholder copy that was written for a mockup and never checked.</li>
     </ul>
     <p style="margin:18px 0 0"><b>What to look at.</b></p>
     <ul>

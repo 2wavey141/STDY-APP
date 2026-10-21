@@ -24,8 +24,9 @@ the page number.
 ## Layout
 
 ```
-index.html              prototype gallery (the Pages root)
-nightfall-orbit-v2.html verse visualizer - Acts 2:42, tilted orbit
+index.html              gallery (the Pages root)
+verse.html              THE APP - the orbit running on data/
+nightfall-orbit-v2.html design prototype, static, self-contained
 nightfall-topic.html    topic view - fellowship / koinonia
 nightfall-landing.html  discovery - search, curated tiles, catalog rails
 v1/v2/v3-*.html         earlier passes, light theme, superseded
@@ -97,6 +98,13 @@ Interface prototypes are done and should not be redesigned.
 - Scripture: **5 passages, 4 translations each**
 - Commentary: **24 notes, ~159k chars**, 6 public-domain commentators
 - Facets: **1 of 30 filled** - Acts 2:42 "still argued", 5 verified quotes
+- `verse.html` reads it all: four translations, three positions, and every
+  quote expandable to show itself highlighted inside the full source note
+
+`verse.html` fetches from `data/`, so a browser will not load it over
+`file://`. Serve the folder - `python3 -m http.server`, then
+`localhost:8000/verse.html` - or use the live URL. The five facets that are
+still placeholder copy are badged in rust and say they must not be trusted.
 
 The remaining 29 are the real work. [BUILD-PLAN.md](BUILD-PLAN.md) says who does
 it and in what order.

@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Verse visualizer — live</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0B0F15; --sur:#151B24; --sur2:#1C2430;
+  --line:rgba(255,255,255,.09);
+  --tx:#F5F0E6; --tx2:#A29A8E; --tx3:#7C7466;
+  --gold:#E0A458; --blue:#6D8FD8; --sage:#7FA88C; --rose:#C97D8E;
+  --violet:#9B8AD4; --steel:#8A98A8; --warn:#C9765A;
+  --serif:"Fraunces",Georgia,serif; --sans:"IBM Plex Sans",system-ui,sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:#07080B;color:var(--tx);font-family:var(--sans);
+  padding:44px 16px 88px;display:flex;flex-direction:column;align-items:center}
+.intro{max-width:390px;width:100%;margin-bottom:20px}
+.intro h1{font-family:var(--serif);font-size:30px;font-weight:600;margin:0 0 6px}
+.intro p{font-size:13.5px;line-height:1.6;color:var(--tx2);margin:0}
+.intro a{color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(224,164,88,.3)}
+
+.frame{width:390px;max-width:100%;height:840px;border-radius:30px;overflow:hidden;
+  position:relative;display:flex;flex-direction:column;background:var(--bg);border:1px solid var(--line)}
+
+.hd{position:relative;z-index:6;flex:none;padding:18px 22px 13px;border-bottom:1px solid var(--line)}
+.crumb{font-size:10.5px;letter-spacing:.13em;color:var(--tx3);margin:0 0 9px;display:flex;gap:7px;align-items:center}
+.tr{display:flex;gap:4px;margin-left:auto}
+.tr button{font-family:var(--sans);font-size:9.5px;letter-spacing:.07em;padding:3px 7px;border-radius:100px;
+  background:none;border:1px solid var(--line);color:var(--tx3);cursor:pointer;transition:.18s}
+.tr button:hover{color:var(--tx2);border-color:rgba(255,255,255,.2)}
+.tr button[data-on="true"]{color:var(--gold);border-color:rgba(224,164,88,.45);background:rgba(224,164,88,.1)}
+.vs{font-family:var(--serif);font-size:17px;line-height:1.42;margin:0;color:var(--tx2);min-height:48px}
+
+.scene{position:relative;flex:none;height:306px;perspective:1000px;perspective-origin:50% 42%;
+  touch-action:pan-y;cursor:grab;overflow:hidden}
+.scene:active{cursor:grabbing}
+.dust{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.dust i{position:absolute;width:2px;height:2px;border-radius:50%;background:#F5F0E6}
+@keyframes twinkle{0%,100%{opacity:.05}50%{opacity:.38}}
+.aura{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);width:330px;height:330px;
+  border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,rgba(224,164,88,.17),rgba(224,164,88,.04) 45%,transparent 70%);filter:blur(12px)}
+.ring{position:absolute;inset:0;transform-style:preserve-3d;transform:rotateX(-57deg)}
+.path{position:absolute;left:50%;top:42%;width:290px;height:290px;margin:-145px 0 0 -145px;
+  border-radius:50%;border:1px solid rgba(224,164,88,.14)}
+.core{position:absolute;left:50%;top:42%;width:124px;height:124px;margin:-62px 0 0 -62px;
+  border-radius:50%;transform:rotateX(57deg);pointer-events:none;z-index:100;
+  background:radial-gradient(circle at 50% 34%,rgba(224,164,88,.28),rgba(224,164,88,.07) 58%,transparent),#131A24;
+  border:1.5px solid rgba(224,164,88,.5);box-shadow:0 0 56px rgba(224,164,88,.26);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.core b{font-family:var(--serif);font-size:21px;font-weight:600;color:var(--gold)}
+.core small{font-size:9px;letter-spacing:.11em;color:var(--tx3);margin-top:4px}
+
+.card{position:absolute;left:50%;top:42%;width:98px;height:86px;margin:-43px 0 0 -49px;
+  border-radius:24px;border:1px solid;background:#141A23;padding:9px;cursor:pointer;overflow:hidden;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  transition:border-width .2s,box-shadow .35s,background .3s}
+.card .hl{position:absolute;inset:-40% -40% 40% -40%;border-radius:50%;filter:blur(18px);
+  opacity:.24;transition:opacity .35s}
+.card b{position:relative;font-family:var(--serif);font-size:13.5px;font-weight:600;line-height:1.1}
+.card small{position:relative;font-size:8.5px;letter-spacing:.09em;color:var(--tx3);margin-top:3px}
+.card[data-front="true"]{border-width:1.5px;background:#1A2230}
+.card[data-front="true"] .hl{opacity:.72}
+.card .pin{position:absolute;top:7px;right:9px;font-size:8px;color:var(--warn);font-style:normal}
+
+.dots{position:relative;z-index:6;flex:none;display:flex;justify-content:center;gap:7px;padding:0 0 14px}
+.dots i{display:block;width:5px;height:5px;border-radius:50%;background:#2C3440;
+  transition:width .28s,background .28s;cursor:pointer}
+.dots i[data-on="true"]{width:20px;border-radius:3px}
+
+.tray{position:relative;z-index:6;flex:1;border-top:1px solid var(--line);
+  background:#080C11;overflow-y:auto;overscroll-behavior:contain}
+.tray::-webkit-scrollbar{display:none}
+.th{position:sticky;top:0;z-index:3;background:#080C11;padding:15px 22px 12px;
+  border-bottom:1px solid var(--line);display:flex;align-items:center;gap:9px}
+.th .d{width:8px;height:8px;border-radius:50%;flex:none}
+.th b{font-family:var(--serif);font-size:18px;font-weight:600}
+.th em{font-style:normal;font-size:10px;letter-spacing:.1em;color:var(--tx3);margin-left:auto}
+
+.ask{padding:15px 22px 3px}
+.ask p{font-family:var(--serif);font-size:16px;line-height:1.45;color:var(--tx);margin:0 0 7px;font-style:italic}
+.ask small{display:block;font-size:11px;line-height:1.55;color:var(--tx3)}
+
+.it{border-bottom:1px solid var(--line)}
+.it-t{width:100%;text-align:left;background:none;border:none;cursor:pointer;font-family:var(--sans);
+  padding:13px 22px;display:flex;gap:11px;align-items:baseline;color:var(--tx)}
+.it-t span{flex:1;font-family:var(--serif);font-size:16.5px;line-height:1.28}
+.it-t span.gk{font-size:21px}
+.it-t i{font-style:normal;font-size:15px;color:var(--tx3);flex:none;transition:transform .2s}
+.it[data-open="true"] .it-t i{transform:rotate(45deg)}
+.it[data-open="true"] .it-t span{color:var(--gold)}
+.it-b{display:none;padding:0 22px 18px}
+.it[data-open="true"] .it-b{display:block}
+.it-b p{font-family:var(--serif);font-size:16px;line-height:1.6;color:var(--tx2);margin:0 0 11px}
+.it-b p:last-of-type{margin-bottom:0}
+.it-b strong{color:var(--tx);font-weight:600}
+
+.who{display:inline-flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.07em;
+  margin-bottom:9px;padding:4px 9px;border-radius:100px}
+.who span{width:6px;height:6px;border-radius:50%}
+.who.s{color:var(--gold);background:rgba(224,164,88,.10);border:1px solid rgba(224,164,88,.22)}
+.who.s span{background:var(--gold)}
+.who.g{color:var(--violet);background:rgba(155,138,212,.11);border:1px solid rgba(155,138,212,.26)}
+.who.g span{background:var(--violet)}
+.who.pl{color:var(--warn);background:rgba(201,118,90,.11);border:1px solid rgba(201,118,90,.3)}
+.who.pl span{background:var(--warn)}
+
+.gen{background:rgba(155,138,212,.06);border-left:2px solid rgba(155,138,212,.4);
+  padding:13px 15px;border-radius:0 8px 8px 0}
+.gen p{color:#CFC8DE}
+.src{font-size:10.5px;color:var(--tx3);margin-top:11px}
+
+/* a quote and its receipt */
+.q{border-left:2px solid rgba(224,164,88,.42);padding:2px 0 2px 14px;margin:0 0 7px}
+.q blockquote{font-family:var(--serif);font-size:15.5px;line-height:1.55;color:var(--tx);
+  margin:0 0 6px;font-style:italic}
+.q cite{font-style:normal;font-size:11px;color:var(--tx3);display:block}
+.q cite b{color:var(--gold);font-weight:500}
+.chk{margin:5px 0 16px 14px}
+.chk button{font-family:var(--sans);font-size:10px;letter-spacing:.06em;background:none;
+  border:1px solid var(--line);border-radius:100px;padding:4px 10px;color:var(--tx3);cursor:pointer}
+.chk button:hover{color:var(--gold);border-color:rgba(224,164,88,.4)}
+.full{display:none;margin-top:9px;max-height:188px;overflow-y:auto;background:#0B0F15;
+  border:1px solid var(--line);border-radius:9px;padding:12px 13px}
+.full[data-on="true"]{display:block}
+.full p{font-family:var(--serif);font-size:13px;line-height:1.62;color:var(--tx3);margin:0}
+.full mark{background:rgba(224,164,88,.2);color:var(--tx);border-radius:2px;padding:1px 0}
+.full .meta{font-family:var(--sans);font-size:9.5px;letter-spacing:.08em;color:var(--tx3);
+  margin-bottom:8px;padding-bottom:7px;border-bottom:1px solid var(--line)}
+
+.err{padding:22px;font-size:13.5px;line-height:1.65;color:var(--tx2)}
+.err b{color:var(--warn);display:block;margin-bottom:7px;font-weight:500}
+.err code{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--gold);
+  background:#0B0F15;padding:2px 6px;border-radius:4px;border:1px solid var(--line)}
+
+.foot{max-width:390px;width:100%;margin-top:22px;font-size:13px;line-height:1.75;color:var(--tx2)}
+.foot b{color:var(--tx);font-weight:500}
+.foot .k{display:inline-block;width:8px;height:8px;border-radius:50%;margin:0 4px 1px 0}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+
+<div class="intro">
+  <h1>Verse visualizer</h1>
+  <p>Running on real data from <code>data/passages/</code>. <b>Still argued</b> is live: five
+  commentators, every quote checkable against the source in the repo. The other five facets are
+  still placeholder copy, and say so. <a href="nightfall-orbit-v2.html">Design prototype →</a></p>
+</div>
+
+<div class="frame">
+  <div class="hd">
+    <div class="crumb"><span id="crumb">LOADING…</span><span class="tr" id="tr"></span></div>
+    <p class="vs" id="vs"></p>
+  </div>
+
+  <div class="scene" id="scene">
+    <div class="aura"></div>
+    <div class="dust" id="dust"></div>
+    <div class="ring" id="ring">
+      <div class="path"></div>
+      <div class="core"><b id="coreRef">—</b><small id="coreSub"></small></div>
+    </div>
+  </div>
+
+  <div class="dots" id="dots"></div>
+  <div class="tray" id="tray"></div>
+</div>
+
+<p class="foot">
+  <b>How to read it.</b>
+  <span class="k" style="background:var(--gold)"></span>Gold is retrieved and checkable — open
+  <i>check the source</i> on any quote to see it highlighted inside the commentator's full note.
+  <span class="k" style="background:var(--violet)"></span>Violet is written by the model, reasoned
+  from the gold above it.
+  <span class="k" style="background:var(--warn)"></span>Rust is unverified placeholder copy that
+  has not been checked and must not be trusted.
+</p>
+
+<script>
+const SLUG = "acts-2-42";
+
+/* Facet accents and the fixed/free split. The three fixed facets hold the same
+   orbital position on every subject; the other three flex by subject type. */
+const META = {
+  "where-and-when": { label:"Where and when", sub:"SETTING",   c:"#6D8FD8" },
+  "see-it":         { label:"See it",         sub:"PLACES",    c:"#C97D8E" },
+  "still-argued":   { label:"Still argued",   sub:"OPEN",      c:"#8A98A8" },
+  "the-words":      { label:"The words",      sub:"GREEK",     c:"#E0A458" },
+  "where-it-sits":  { label:"Where it sits",  sub:"STRUCTURE", c:"#7FA88C" },
+  "read-next":      { label:"Read next",      sub:"PASSAGES",  c:"#9B8AD4" }
+};
+
+/* Placeholder copy carried over from the design prototype. Every citation here
+   is unverified - the works and scholars are real, the page references were
+   never checked - so each item renders with a placeholder badge. These are
+   replaced facet by facet as the content work lands. */
+const PLACEHOLDER = {
+  "where-and-when": [
+    {t:"The hours of prayer", b:["Jewish practice fixed prayer at set times through the day, including the hour of the afternoon offering. Acts 3:1 has Peter and John going up to the temple at the ninth hour."], src:"Mishnah, Tamid 5; Josephus, Antiquities 14.65"},
+    {t:"Houses, not buildings", b:["There were no church buildings. Acts 2:46 has them in the temple courts by day and breaking bread at home. A well-off Jerusalem house could hold thirty or forty in its courtyard."], src:"Avigad, Discovering Jerusalem"},
+    {t:"How bread was opened", b:["The head of a household took the loaf, blessed God, tore it and passed it round. Flat loaves were torn, never cut."], src:"Second Temple table practice"}
+  ],
+  "see-it": [
+    {t:"Southern steps of the Temple Mount", b:["The main pilgrim approach to the temple courts. If they were going up at the hour of prayer, they were going up these."], src:"image library not yet built"},
+    {t:"The Burnt House", b:["A first-century Jerusalem house destroyed in AD 70 and excavated with its rooms intact."], src:"image library not yet built"},
+    {t:"Stone oven and bread stamp", b:["Bread was baked at home daily in flat loaves. Breaking describes how you open a loaf, not a ritual gesture."], src:"image library not yet built"}
+  ],
+  "the-words": [
+    {t:"προσκαρτεροῦντες", gk:1, b:["<strong>proskarterountes</strong> — to persist in, to attend constantly. Ten uses in the New Testament, six in Acts."], src:"Strong's G4342 — not yet ingested"},
+    {t:"κοινωνίᾳ", gk:1, b:["<strong>koinōnia</strong> — from κοινός, common. Nineteen uses. Covers participation, partnership in a shared work, and literally a cash contribution."], src:"Strong's G2842 — not yet ingested"},
+    {t:"κλάσει τοῦ ἄρτου", gk:1, b:["<strong>klasis</strong> — a breaking. Only two uses in the entire New Testament, and Luke wrote both: here and Luke 24:35."], src:"Strong's G2800 — not yet ingested"}
+  ],
+  "where-it-sits": [
+    {t:"One of three summaries", b:["Luke stops the narrative three times to describe the community as a whole. The repeated notes are shared possessions, shared meals, and growth."], src:"Acts 2:42-47; 4:32-35; 5:12-16"},
+    {t:"It answers the sermon", b:["The verse sits directly after Peter's Pentecost sermon and the response to it. It is what responding looked like."], src:"Acts 2:14-41"},
+    {t:"Four items, one verb", b:["The four datives all hang off a single periphrastic imperfect. Grammatically this is one sustained habit described four ways."], src:"MorphGNT — not yet ingested"}
+  ],
+  "read-next": [
+    {t:"Luke 24:35", b:["The road to Emmaus. He was known to them in the breaking of the bread. The only other use of that noun anywhere."], src:"cross-references not yet ingested"},
+    {t:"Acts 4:32", b:["The second summary. One heart and soul, everything in common."], src:"cross-references not yet ingested"},
+    {t:"1 Corinthians 10:16", b:["Paul uses κοινωνία of the cup and the bread. The closest bridge between this verse and the Lord's Supper."], src:"cross-references not yet ingested"}
+  ]
+};
+
+const esc = s => String(s == null ? "" : s)
+  .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+
+let F = [], pos = 0, target = 0, drag = false, lastX = 0, moved = false, cur = -1;
+let passage = null, commentary = null, running = false;
+
+const scene = document.getElementById("scene"),
+      ring  = document.getElementById("ring"),
+      tray  = document.getElementById("tray");
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ---------- starfield ---------- */
+let dd = "";
+for (let i = 0; i < 32; i++){
+  const dur = (4 + Math.random() * 6).toFixed(1);
+  dd += `<i style="left:${(Math.random()*100).toFixed(1)}%;top:${(Math.random()*100).toFixed(1)}%;opacity:.1;
+    ${reduce ? "" : `animation:twinkle ${dur}s ease-in-out ${(Math.random()*5).toFixed(1)}s infinite`}"></i>`;
+}
+document.getElementById("dust").innerHTML = dd;
+
+/* ---------- load ---------- */
+async function boot(){
+  try {
+    const [p, c] = await Promise.all([
+      fetch(`data/passages/${SLUG}.json`).then(r => { if(!r.ok) throw new Error(r.status); return r.json(); }),
+      fetch(`data/commentary/${SLUG}.json`).then(r => r.ok ? r.json() : {commentaries:[]})
+    ]);
+    passage = p;
+    commentary = Object.fromEntries((c.commentaries || []).map(x => [x.id, x]));
+    render();
+  } catch (e) {
+    tray.innerHTML = `<div class="err"><b>Could not load the passage data.</b>
+      This page reads JSON from <code>data/</code>, which a browser will not fetch over
+      <code>file://</code>. Serve the folder instead: run <code>python3 -m http.server</code>
+      in the repo and open <code>localhost:8000/verse.html</code>.
+      <br><br>On GitHub Pages it loads normally.</div>`;
+    document.getElementById("crumb").textContent = "DATA NOT LOADED";
+  }
+}
+
+function render(){
+  const order = ["where-and-when","see-it","still-argued","the-words","where-it-sits","read-next"];
+  F = order.filter(k => passage.facets[k]).map(key => {
+    const facet = passage.facets[key];
+    const m = META[key];
+    const real = facet.status === "curated";
+    return {
+      key, label:m.label, sub:m.sub, c:m.c, facet, real,
+      items: real ? positionItems(facet) : (PLACEHOLDER[key] || []).map(i => ({...i, placeholder:true}))
+    };
+  });
+
+  document.getElementById("coreRef").textContent = passage.reference.display;
+  document.getElementById("coreSub").textContent =
+    `${F.filter(f=>f.real).length} OF ${F.length} FACETS LIVE`;
+  document.getElementById("crumb").textContent =
+    `${passage.reference.book_name.toUpperCase()} · ${Object.keys(passage.text).length} TRANSLATIONS`;
+
+  buildTranslations();
+  buildCards();
+  if (!running){ running = true; frame(); }
+}
+
+/* one tray item per position, quotes beneath it */
+function positionItems(facet){
+  const byClaim = new Map();
+  facet.sourced.forEach(s => {
+    if (!byClaim.has(s.claim)) byClaim.set(s.claim, []);
+    byClaim.get(s.claim).push(s);
+  });
+  const summaries = Object.fromEntries(
+    (facet.written?.per_position || []).map(w => [w.about, w.text]));
+  return [...byClaim.entries()].map(([claim, quotes]) => ({
+    t: claim, quotes, summary: summaries[claim]
+  }));
+}
+
+function buildTranslations(){
+  const el = document.getElementById("tr");
+  el.innerHTML = Object.keys(passage.text).map(id =>
+    `<button data-id="${id}" data-on="${id === passage.default_translation}">${labelFor(id)}</button>`
+  ).join("");
+  el.querySelectorAll("button").forEach(b =>
+    b.addEventListener("click", () => showText(b.dataset.id)));
+  showText(passage.default_translation);
+}
+
+function labelFor(id){
+  return ({BSB:"BSB", eng_kjv:"KJV", ENGWEBP:"WEB", eng_asv:"ASV"})[id] || id;
+}
+
+function showText(id){
+  document.getElementById("vs").textContent = passage.text[id];
+  document.querySelectorAll("#tr button").forEach(b =>
+    b.dataset.on = (b.dataset.id === id));
+}
+
+function buildCards(){
+  ring.querySelectorAll(".card").forEach(n => n.remove());
+  F.forEach((f, i) => {
+    const el = document.createElement("div");
+    el.className = "card";
+    el.id = "c-" + i;
+    el.style.borderColor = f.c;
+    el.setAttribute("role","button");
+    el.setAttribute("tabindex","0");
+    el.setAttribute("aria-label", f.label + (f.real ? "" : " — placeholder"));
+    el.innerHTML = `<div class="hl" style="background:${f.c}"></div>` +
+      (f.real ? "" : `<i class="pin">●</i>`) +
+      `<b style="color:${f.c}">${esc(f.label)}</b><small>${esc(f.sub)}</small>`;
+    el.addEventListener("click", () => { if (!moved) go(i); });
+    el.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " "){ e.preventDefault(); go(i); }
+    });
+    ring.appendChild(el);
+  });
+  document.getElementById("dots").innerHTML =
+    F.map((f,i) => `<i id="d-${i}" data-i="${i}"></i>`).join("");
+  document.querySelectorAll("#dots i").forEach(d =>
+    d.addEventListener("click", () => go(+d.dataset.i)));
+}
+
+/* ---------- orbit ---------- */
+const R = 145, TILT = 57;
+
+function frame(){
+  const N = F.length, STEP = 360 / N;
+  pos += (target - pos) * 0.13;
+  F.forEach((f, i) => {
+    const a = (i - pos) * STEP;
+    const front = Math.cos(a * Math.PI / 180);
+    const el = document.getElementById("c-" + i);
+    if (!el) return;
+    el.style.transform = `rotateY(${a}deg) translateZ(${R}px) rotateY(${-a}deg) rotateX(${TILT}deg)`;
+    el.style.opacity = (0.16 + 0.84 * Math.pow((front + 1) / 2, 1.5)).toFixed(3);
+    el.style.zIndex = Math.round(100 + front * 60);
+    el.style.pointerEvents = front > 0.1 ? "auto" : "none";
+    const isF = front > 0.86;
+    el.dataset.front = isF;
+    el.style.boxShadow = isF ? `0 14px 44px ${f.c}4D` : "none";
+  });
+  const now = ((Math.round(pos) % N) + N) % N;
+  if (now !== cur){ cur = now; select(cur); }
+  requestAnimationFrame(frame);
+}
+
+function go(i){
+  const N = F.length;
+  let want = i;
+  while (want - target > N / 2) want -= N;
+  while (target - want > N / 2) want += N;
+  target = want;
+}
+
+function select(i){
+  F.forEach((f, j) => {
+    const el = document.getElementById("d-" + j);
+    if (!el) return;
+    el.dataset.on = (i === j);
+    el.style.background = (i === j) ? f.c : "#2C3440";
+  });
+  drawTray(F[i]);
+}
+
+scene.addEventListener("pointerdown", e => {
+  drag = true; moved = false; lastX = e.clientX; scene.setPointerCapture(e.pointerId);
+});
+scene.addEventListener("pointermove", e => {
+  if (!drag) return;
+  const dx = e.clientX - lastX; lastX = e.clientX;
+  if (Math.abs(dx) > 1) moved = true;
+  target -= dx / 62;
+});
+scene.addEventListener("pointerup", e => {
+  drag = false;
+  if (moved) target = Math.round(target);
+  scene.releasePointerCapture(e.pointerId);
+});
+scene.addEventListener("pointercancel", () => { drag = false; });
+
+/* ---------- tray ---------- */
+function drawTray(f){
+  const head =
+    `<div class="th"><span class="d" style="background:${f.c}"></span><b>${esc(f.label)}</b>` +
+    `<em>${f.items.length} ${f.real ? "POSITIONS" : "PLACEHOLDER"}</em></div>`;
+
+  const ask = (f.real && f.facet.question)
+    ? `<div class="ask"><p>${esc(f.facet.question)}</p>
+         <small>${esc(f.facet.scope_note || "")}</small></div>`
+    : "";
+
+  tray.innerHTML = head + ask + f.items.map((it, i) => `
+    <div class="it" data-open="false" id="i-${i}">
+      <button class="it-t" data-i="${i}">
+        <span class="${it.gk ? "gk" : ""}">${it.gk ? esc(it.t) : esc(it.t)}</span><i>+</i>
+      </button>
+      <div class="it-b">${it.placeholder ? placeholderBody(it) : positionBody(it, i)}</div>
+    </div>`).join("");
+
+  tray.querySelectorAll(".it-t").forEach(b =>
+    b.addEventListener("click", () => flip(+b.dataset.i)));
+  tray.querySelectorAll("[data-full]").forEach(b =>
+    b.addEventListener("click", () => {
+      const box = document.getElementById(b.dataset.full);
+      const on = box.dataset.on === "true";
+      box.dataset.on = on ? "false" : "true";
+      b.textContent = on ? "Check the source" : "Hide the source";
+    }));
+  tray.scrollTop = 0;
+}
+
+function placeholderBody(it){
+  return `<span class="who pl"><span></span>PLACEHOLDER · NOT VERIFIED</span>` +
+    it.b.map(p => `<p>${p}</p>`).join("") +
+    `<p class="src">${esc(it.src)} — written for the design mockup and never checked. Do not trust it.</p>`;
+}
+
+function positionBody(it, idx){
+  const quotes = it.quotes.map((q, j) => {
+    const id = `f-${idx}-${j}`;
+    const note = commentary[q.commentary_id];
+    const receipt = note ? `
+      <div class="chk">
+        <button data-full="${id}">Check the source</button>
+        <div class="full" id="${id}" data-on="false">
+          <p class="meta">${esc(q.author).toUpperCase()} · ${esc(note.era)} · ON ${esc(note.covers)}
+            · ${note.chars.toLocaleString()} CHARS · PUBLIC DOMAIN</p>
+          <p>${highlight(note.text, q.quote)}</p>
+        </div>
+      </div>` : "";
+    return `
+      <div class="q">
+        <blockquote>“${esc(q.quote)}”</blockquote>
+        <cite><b>${esc(q.author)}</b> · ${esc(q.era)} · on ${esc(q.covers)}${
+          q.verified ? "" : " · UNVERIFIED"}</cite>
+      </div>${receipt}`;
+  }).join("");
+
+  return `<span class="who s"><span></span>FROM SOURCE · VERIFIED VERBATIM</span>` +
+    quotes +
+    (it.summary
+      ? `<span class="who g"><span></span>WRITTEN BY THE MODEL</span>
+         <div class="gen"><p>${esc(it.summary)}</p></div>`
+      : "");
+}
+
+/* show the quote in its original context - this is the receipt */
+function highlight(full, quote){
+  const i = full.indexOf(quote);
+  if (i < 0) return esc(full);
+  return esc(full.slice(0, i)) + "<mark>" + esc(quote) + "</mark>" + esc(full.slice(i + quote.length));
+}
+
+function flip(i){
+  const el = document.getElementById("i-" + i);
+  const open = el.dataset.open === "true";
+  document.querySelectorAll(".it").forEach(x => x.dataset.open = "false");
+  el.dataset.open = open ? "false" : "true";
+}
+
+boot();
+</script>
+</body>
+</html>
