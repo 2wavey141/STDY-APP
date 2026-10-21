@@ -66,9 +66,81 @@
       "position": 2,
       "fixed": true,
       "fillable_by": "human",
-      "sourced": [],
-      "written": null,
-      "status": "empty"
+      "sourced": [
+        {
+          "claim": "It is the Lord's Supper.",
+          "quote": "They continued in the breaking of bread, in celebrating that memorial of their Master's death",
+          "author": "Matthew Henry",
+          "era": "1708-1710",
+          "covers": "2:42",
+          "commentary_id": "matthew-henry",
+          "license": "public domain",
+          "verified": true
+        },
+        {
+          "claim": "It is the Lord's Supper.",
+          "quote": "though the Jews used to begin their meals with breaking of bread, yet the whole repast, or meal, is never by them called by that name",
+          "author": "John Gill",
+          "era": "1746-1763",
+          "covers": "2:42",
+          "commentary_id": "john-gill",
+          "license": "public domain",
+          "verified": true
+        },
+        {
+          "claim": "It is a shared meal, with the Lord's Supper joined to it.",
+          "quote": "not certainly in the Lord's Supper alone, but rather in frugal repasts taken together, with which the Lord's Supper was probably conjoined",
+          "author": "Jamieson, Fausset and Brown",
+          "era": "1871",
+          "covers": "2:42",
+          "commentary_id": "jamieson-fausset-brown",
+          "license": "public domain",
+          "verified": true
+        },
+        {
+          "claim": "The text does not settle it.",
+          "quote": "Whether this means the holy eucharist, or their common meals, it is difficult to say",
+          "author": "Adam Clarke",
+          "era": "1810-1826",
+          "covers": "2:42",
+          "commentary_id": "adam-clarke",
+          "license": "public domain",
+          "verified": true
+        },
+        {
+          "claim": "The text does not settle it.",
+          "quote": "Communication or fellowship, and breaking of bread, may be taken diversely",
+          "author": "John Calvin",
+          "era": "1540s-1550s",
+          "covers": "2:40-42",
+          "commentary_id": "john-calvin",
+          "license": "public domain",
+          "verified": true
+        }
+      ],
+      "written": {
+        "overview": "Five commentators, three positions, and a flat contradiction at the centre: Gill rules out the common meal, Jamieson-Fausset-Brown make it the main thing. Two more decline to settle the question at all. That the earliest readers of this verse could not agree on what its central act was is itself the finding - the uncertainty is in the text, not in the reading of it.",
+        "per_position": [
+          {
+            "about": "It is the Lord's Supper.",
+            "text": "Henry treats it as plainly sacramental. Gill argues the point from usage: Jews broke bread at the start of a meal, but never called the meal itself by that name, so the phrase must mean something set apart."
+          },
+          {
+            "about": "It is a shared meal, with the Lord's Supper joined to it.",
+            "text": "A direct contradiction of Gill on the same clause: the ordinary meal is primary and the sacrament sits inside it. They add that the two were later pulled apart - by abuse and persecution - which makes the single practice in Acts 2:42 the earlier one."
+          },
+          {
+            "about": "The text does not settle it.",
+            "text": "Both decline to decide. Clarke notes that breaking bread was simply the act that opened a meal - what we would call saying grace - so the phrase carries no sacramental weight on its own. Calvin's note here covers 2:40-42 rather than this verse alone."
+          }
+        ]
+      },
+      "status": "curated",
+      "question": "Does \"the breaking of bread\" mean the Lord's Supper, or an ordinary shared meal?",
+      "why_it_matters": "Acts 2:42 is the verse most often used to describe what the earliest church actually did together. Whether its central act was a sacrament or a supper changes what the verse is taken to establish.",
+      "scope": "historical",
+      "scope_note": "These are public-domain commentators, 1550s to 1871. They show how this question was argued, not how it is argued now. Modern positions are a later layer.",
+      "source_file": "content/still-argued/acts-2-42.json"
     },
     "the-words": {
       "position": null,
@@ -99,5 +171,5 @@
     "Scripture texts via the Free Use Bible API (AO Lab), bible.helloao.org — public-domain translations.",
     "Berean Standard Bible — public domain, berean.bible."
   ],
-  "generated": "2026-10-21T02:19:18Z"
+  "generated": "2026-10-21T02:50:16Z"
 }

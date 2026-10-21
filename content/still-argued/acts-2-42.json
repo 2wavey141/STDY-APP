@@ -1,0 +1,72 @@
+{
+  "_comment": "Hand-curated facet content. Lives in content/ (ours, keyed by passage) rather than inside any third party's structure - see BUILD-PLAN.md on share-alike. Every quote must appear verbatim in data/commentary/<slug>.json; scripts/verify_quotes.py enforces that and fails the build if it does not.",
+  "slug": "acts-2-42",
+  "facet": "still-argued",
+  "scope": "historical",
+  "scope_note": "These are public-domain commentators, 1550s to 1871. They show how this question was argued, not how it is argued now. Modern positions are a later layer.",
+
+  "question": "Does \"the breaking of bread\" mean the Lord's Supper, or an ordinary shared meal?",
+  "why_it_matters": "Acts 2:42 is the verse most often used to describe what the earliest church actually did together. Whether its central act was a sacrament or a supper changes what the verse is taken to establish.",
+
+  "positions": [
+    {
+      "position": "It is the Lord's Supper.",
+      "held_by": [
+        {
+          "author": "Matthew Henry",
+          "commentary_id": "matthew-henry",
+          "era": "1708-1710",
+          "covers": "2:42",
+          "quote": "They continued in the breaking of bread, in celebrating that memorial of their Master's death"
+        },
+        {
+          "author": "John Gill",
+          "commentary_id": "john-gill",
+          "era": "1746-1763",
+          "covers": "2:42",
+          "quote": "though the Jews used to begin their meals with breaking of bread, yet the whole repast, or meal, is never by them called by that name"
+        }
+      ],
+      "summary": "Henry treats it as plainly sacramental. Gill argues the point from usage: Jews broke bread at the start of a meal, but never called the meal itself by that name, so the phrase must mean something set apart.",
+      "summary_tier": "written"
+    },
+    {
+      "position": "It is a shared meal, with the Lord's Supper joined to it.",
+      "held_by": [
+        {
+          "author": "Jamieson, Fausset and Brown",
+          "commentary_id": "jamieson-fausset-brown",
+          "era": "1871",
+          "covers": "2:42",
+          "quote": "not certainly in the Lord's Supper alone, but rather in frugal repasts taken together, with which the Lord's Supper was probably conjoined"
+        }
+      ],
+      "summary": "A direct contradiction of Gill on the same clause: the ordinary meal is primary and the sacrament sits inside it. They add that the two were later pulled apart - by abuse and persecution - which makes the single practice in Acts 2:42 the earlier one.",
+      "summary_tier": "written"
+    },
+    {
+      "position": "The text does not settle it.",
+      "held_by": [
+        {
+          "author": "Adam Clarke",
+          "commentary_id": "adam-clarke",
+          "era": "1810-1826",
+          "covers": "2:42",
+          "quote": "Whether this means the holy eucharist, or their common meals, it is difficult to say"
+        },
+        {
+          "author": "John Calvin",
+          "commentary_id": "john-calvin",
+          "era": "1540s-1550s",
+          "covers": "2:40-42",
+          "quote": "Communication or fellowship, and breaking of bread, may be taken diversely"
+        }
+      ],
+      "summary": "Both decline to decide. Clarke notes that breaking bread was simply the act that opened a meal - what we would call saying grace - so the phrase carries no sacramental weight on its own. Calvin's note here covers 2:40-42 rather than this verse alone.",
+      "summary_tier": "written"
+    }
+  ],
+
+  "written_overview": "Five commentators, three positions, and a flat contradiction at the centre: Gill rules out the common meal, Jamieson-Fausset-Brown make it the main thing. Two more decline to settle the question at all. That the earliest readers of this verse could not agree on what its central act was is itself the finding - the uncertainty is in the text, not in the reading of it.",
+  "written_tier": "written"
+}

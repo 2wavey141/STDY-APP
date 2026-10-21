@@ -20,8 +20,12 @@ import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
+from verify_quotes import norm
+
 ROOT = Path(__file__).resolve().parent.parent
 SCRIPTS = ROOT / "scripts"
+CONTENT = ROOT / "content"
+COMMENTARY = ROOT / "data" / "commentary"
 OUT = ROOT / "data" / "passages"
 SCHEMA = 1
 
@@ -135,6 +139,80 @@ def empty_facet(name, subject_type):
     }
 
 
+def load_curated(slug):
+    """Hand-written facet content from content/<facet>/<slug>.json.
+
+    Kept in our own tree and keyed by passage, so nothing we write is
+    entangled with a share-alike dataset. See BUILD-PLAN.md.
+    """
+    found = {}
+    if not CONTENT.exists():
+        return found
+    for path in sorted(CONTENT.glob(f"*/{slug}.json")):
+        with open(path, encoding="utf-8") as f:
+            doc = json.load(f)
+        found[doc.get("facet") or path.parent.name] = (doc, path.relative_to(ROOT).as_posix())
+    return found
+
+
+def commentary_texts(slug):
+    path = COMMENTARY / f"{slug}.json"
+    if not path.exists():
+        return {}
+    with open(path, encoding="utf-8") as f:
+        return {c["id"]: norm(c["text"]) for c in json.load(f)["commentaries"]}
+
+
+def merge_curated(facet, doc, source_file, texts):
+    """Fold curated content into a facet, keeping the trust split explicit.
+
+    sourced  - verbatim quotes and who said them. Gold. Each is checked against
+               the commentary text that ships with it, right here, so the data
+               never claims a quote is verified without having checked it.
+    written  - our summaries. Violet. Stored separately so the app cannot
+               render one tier as the other by accident.
+    """
+    sourced, per_position, unverified = [], [], 0
+
+    for position in doc.get("positions", []):
+        for held in position.get("held_by", []):
+            cid = held.get("commentary_id")
+            quote = held.get("quote", "")
+            ok = cid in texts and norm(quote) in texts[cid]
+            if not ok:
+                unverified += 1
+                print(f"    ! UNVERIFIED quote attributed to {held.get('author', cid)}",
+                      file=sys.stderr)
+            sourced.append({
+                "claim": position.get("position"),
+                "quote": quote,
+                "author": held.get("author"),
+                "era": held.get("era"),
+                "covers": held.get("covers"),
+                "commentary_id": cid,
+                "license": "public domain",
+                "verified": ok,
+            })
+        if position.get("summary"):
+            per_position.append({
+                "about": position.get("position"),
+                "text": position["summary"],
+            })
+
+    facet.update({
+        "question": doc.get("question"),
+        "why_it_matters": doc.get("why_it_matters"),
+        "scope": doc.get("scope"),
+        "scope_note": doc.get("scope_note"),
+        "sourced": sourced,
+        "written": {"overview": doc.get("written_overview"), "per_position": per_position},
+        "status": "curated" if sourced and not unverified else
+                  ("has-unverified-quotes" if unverified else "empty"),
+        "source_file": source_file,
+    })
+    return facet
+
+
 def build(passage, cfg):
     base = cfg["api"]["base"]
     book = passage["book"]
@@ -166,7 +244,16 @@ def build(passage, cfg):
         raise RuntimeError(f"no text retrieved for {passage['slug']}")
 
     ref = f"{display or book} {chapter}:{first}" + (f"-{last}" if last != first else "")
-    facets = FIXED_FACETS + FACETS_BY_TYPE.get(subject_type, [])
+    names = FIXED_FACETS + FACETS_BY_TYPE.get(subject_type, [])
+    facets = {name: empty_facet(name, subject_type) for name in names}
+
+    # NB: not `texts` - that name holds the scripture translations in this scope.
+    quoted = commentary_texts(passage["slug"])
+    for name, (doc, source_file) in load_curated(passage["slug"]).items():
+        if name not in facets:
+            print(f"    ! curated content for unknown facet {name!r}", file=sys.stderr)
+            continue
+        facets[name] = merge_curated(facets[name], doc, source_file, quoted)
 
     return {
         "schema": SCHEMA,
@@ -185,7 +272,7 @@ def build(passage, cfg):
         "verses": verses_by_tr,
         "default_translation": next(t["id"] for t in cfg["translations"] if t.get("default")),
         "footnotes": notes,
-        "facets": {name: empty_facet(name, subject_type) for name in facets},
+        "facets": facets,
         "attribution": cfg["attribution"],
         "generated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
     }
@@ -218,14 +305,15 @@ def main():
             json.dump(doc, f, indent=2, ensure_ascii=False)
             f.write("\n")
         got = len(doc["text"])
+        filled = sum(1 for f in doc["facets"].values() if f["status"] == "curated")
         print(f"    {doc['reference']['display']} - {got} translation(s), "
-              f"{len(doc['footnotes'])} footnote(s)")
+              f"{len(doc['footnotes'])} footnote(s), {filled}/{len(doc['facets'])} facets")
         index.append({
             "slug": doc["slug"],
             "type": doc["type"],
             "reference": doc["reference"]["display"],
             "text": doc["text"][doc["default_translation"]],
-            "facets_filled": 0,
+            "facets_filled": filled,
             "facets_total": len(doc["facets"]),
         })
 
@@ -242,7 +330,8 @@ def main():
     print(f"\n{len(index)} passage(s) written to data/passages/")
     if index:
         total = sum(i["facets_total"] for i in index)
-        print(f"0 of {total} facets filled - that work is tracks A and B in BUILD-PLAN.md")
+        done = sum(i["facets_filled"] for i in index)
+        print(f"{done} of {total} facets filled - the rest is tracks A and B in BUILD-PLAN.md")
     if failed:
         sys.exit(f"{len(failed)} failed: {', '.join(failed)}")
 

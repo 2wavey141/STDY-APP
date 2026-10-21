@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generated": "2026-10-21T02:19:21Z",
+  "generated": "2026-10-21T02:50:20Z",
   "count": 5,
   "passages": [
     {
@@ -8,7 +8,7 @@
       "type": "verse",
       "reference": "Acts 2:42",
       "text": "They devoted themselves to the apostles’ teaching and to the fellowship, to the breaking of bread and to prayer.",
-      "facets_filled": 0,
+      "facets_filled": 1,
       "facets_total": 6
     },
     {
