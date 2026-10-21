@@ -38,6 +38,7 @@ scripts/build_commentary.py public-domain commentary ingest
 scripts/verify_quotes.py   checks every quote against its source
 
 content/still-argued/*.json hand-written facet content (ours)
+notes/*.md                 research briefs - to-do lists, never shipped
 
 data/index.json            passage list for the app
 data/passages/*.json       one file per passage
@@ -103,8 +104,12 @@ Interface prototypes are done and should not be redesigned.
 
 `verse.html` fetches from `data/`, so a browser will not load it over
 `file://`. Serve the folder - `python3 -m http.server`, then
-`localhost:8000/verse.html` - or use the live URL. The five facets that are
-still placeholder copy are badged in rust and say they must not be trusted.
+`localhost:8000/verse.html` - or use the live URL.
+
+**Only verified content is shown.** The five facets without checked sources
+render as empty and say what they are waiting on. The mockup copy that used to
+fill them cited page references that were never checked; it now lives in
+`notes/research-brief-acts-2-42.md` as a to-do list, not as content.
 
 The remaining 29 are the real work. [BUILD-PLAN.md](BUILD-PLAN.md) says who does
 it and in what order.

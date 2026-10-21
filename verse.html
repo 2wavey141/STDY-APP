@@ -66,7 +66,9 @@ body{margin:0;background:#07080B;color:var(--tx);font-family:var(--sans);
 .card small{position:relative;font-size:8.5px;letter-spacing:.09em;color:var(--tx3);margin-top:3px}
 .card[data-front="true"]{border-width:1.5px;background:#1A2230}
 .card[data-front="true"] .hl{opacity:.72}
-.card .pin{position:absolute;top:7px;right:9px;font-size:8px;color:var(--warn);font-style:normal}
+.card .pin{position:absolute;top:8px;right:9px;width:5px;height:5px;border-radius:50%;
+  border:1px solid var(--tx3);opacity:.7}
+.card[data-front="true"] .pin{opacity:1}
 
 .dots{position:relative;z-index:6;flex:none;display:flex;justify-content:center;gap:7px;padding:0 0 14px}
 .dots i{display:block;width:5px;height:5px;border-radius:50%;background:#2C3440;
@@ -107,8 +109,14 @@ body{margin:0;background:#07080B;color:var(--tx);font-family:var(--sans);
 .who.s span{background:var(--gold)}
 .who.g{color:var(--violet);background:rgba(155,138,212,.11);border:1px solid rgba(155,138,212,.26)}
 .who.g span{background:var(--violet)}
-.who.pl{color:var(--warn);background:rgba(201,118,90,.11);border:1px solid rgba(201,118,90,.3)}
-.who.pl span{background:var(--warn)}
+.await{padding:20px 22px 26px}
+.await .big{font-family:var(--serif);font-size:19px;font-weight:600;color:var(--tx);margin:0 0 9px}
+.await p{font-family:var(--serif);font-size:15.5px;line-height:1.58;color:var(--tx2);margin:0 0 14px}
+.await .row{border-top:1px solid var(--line);padding-top:13px;margin-top:4px}
+.await .lab{font-size:9.5px;letter-spacing:.13em;color:var(--tx3);margin:0 0 5px}
+.await .need{font-family:var(--sans);font-size:12.5px;line-height:1.6;color:var(--tx2);margin:0}
+.await .tag{display:inline-block;margin-top:12px;font-size:9.5px;letter-spacing:.1em;
+  color:var(--tx3);border:1px solid var(--line);border-radius:100px;padding:4px 10px}
 
 .gen{background:rgba(155,138,212,.06);border-left:2px solid rgba(155,138,212,.4);
   padding:13px 15px;border-radius:0 8px 8px 0}
@@ -150,8 +158,9 @@ body{margin:0;background:#07080B;color:var(--tx);font-family:var(--sans);
 <div class="intro">
   <h1>Verse visualizer</h1>
   <p>Running on real data from <code>data/passages/</code>. <b>Still argued</b> is live: five
-  commentators, every quote checkable against the source in the repo. The other five facets are
-  still placeholder copy, and say so. <a href="nightfall-orbit-v2.html">Design prototype →</a></p>
+  commentators, every quote checkable against the source that ships with it. The other five facets
+  are empty and say what they are waiting on — nothing unverified is shown.
+  <a href="nightfall-orbit-v2.html">Design prototype →</a></p>
 </div>
 
 <div class="frame">
@@ -179,8 +188,8 @@ body{margin:0;background:#07080B;color:var(--tx);font-family:var(--sans);
   <i>check the source</i> on any quote to see it highlighted inside the commentator's full note.
   <span class="k" style="background:var(--violet)"></span>Violet is written by the model, reasoned
   from the gold above it.
-  <span class="k" style="background:var(--warn)"></span>Rust is unverified placeholder copy that
-  has not been checked and must not be trusted.
+  An empty facet stays empty: if a claim is not sourced and checked, the app shows nothing rather
+  than something plausible.
 </p>
 
 <script>
@@ -197,36 +206,38 @@ const META = {
   "read-next":      { label:"Read next",      sub:"PASSAGES",  c:"#9B8AD4" }
 };
 
-/* Placeholder copy carried over from the design prototype. Every citation here
-   is unverified - the works and scholars are real, the page references were
-   never checked - so each item renders with a placeholder badge. These are
-   replaced facet by facet as the content work lands. */
-const PLACEHOLDER = {
-  "where-and-when": [
-    {t:"The hours of prayer", b:["Jewish practice fixed prayer at set times through the day, including the hour of the afternoon offering. Acts 3:1 has Peter and John going up to the temple at the ninth hour."], src:"Mishnah, Tamid 5; Josephus, Antiquities 14.65"},
-    {t:"Houses, not buildings", b:["There were no church buildings. Acts 2:46 has them in the temple courts by day and breaking bread at home. A well-off Jerusalem house could hold thirty or forty in its courtyard."], src:"Avigad, Discovering Jerusalem"},
-    {t:"How bread was opened", b:["The head of a household took the loaf, blessed God, tore it and passed it round. Flat loaves were torn, never cut."], src:"Second Temple table practice"}
-  ],
-  "see-it": [
-    {t:"Southern steps of the Temple Mount", b:["The main pilgrim approach to the temple courts. If they were going up at the hour of prayer, they were going up these."], src:"image library not yet built"},
-    {t:"The Burnt House", b:["A first-century Jerusalem house destroyed in AD 70 and excavated with its rooms intact."], src:"image library not yet built"},
-    {t:"Stone oven and bread stamp", b:["Bread was baked at home daily in flat loaves. Breaking describes how you open a loaf, not a ritual gesture."], src:"image library not yet built"}
-  ],
-  "the-words": [
-    {t:"προσκαρτεροῦντες", gk:1, b:["<strong>proskarterountes</strong> — to persist in, to attend constantly. Ten uses in the New Testament, six in Acts."], src:"Strong's G4342 — not yet ingested"},
-    {t:"κοινωνίᾳ", gk:1, b:["<strong>koinōnia</strong> — from κοινός, common. Nineteen uses. Covers participation, partnership in a shared work, and literally a cash contribution."], src:"Strong's G2842 — not yet ingested"},
-    {t:"κλάσει τοῦ ἄρτου", gk:1, b:["<strong>klasis</strong> — a breaking. Only two uses in the entire New Testament, and Luke wrote both: here and Luke 24:35."], src:"Strong's G2800 — not yet ingested"}
-  ],
-  "where-it-sits": [
-    {t:"One of three summaries", b:["Luke stops the narrative three times to describe the community as a whole. The repeated notes are shared possessions, shared meals, and growth."], src:"Acts 2:42-47; 4:32-35; 5:12-16"},
-    {t:"It answers the sermon", b:["The verse sits directly after Peter's Pentecost sermon and the response to it. It is what responding looked like."], src:"Acts 2:14-41"},
-    {t:"Four items, one verb", b:["The four datives all hang off a single periphrastic imperfect. Grammatically this is one sustained habit described four ways."], src:"MorphGNT — not yet ingested"}
-  ],
-  "read-next": [
-    {t:"Luke 24:35", b:["The road to Emmaus. He was known to them in the breaking of the bread. The only other use of that noun anywhere."], src:"cross-references not yet ingested"},
-    {t:"Acts 4:32", b:["The second summary. One heart and soul, everything in common."], src:"cross-references not yet ingested"},
-    {t:"1 Corinthians 10:16", b:["Paul uses κοινωνία of the cup and the bread. The closest bridge between this verse and the Lord's Supper."], src:"cross-references not yet ingested"}
-  ]
+/* What each unbuilt facet will hold, and what it is waiting on.
+
+   The mockup copy that used to sit here cited Bock, Keener, Barrett and BDAG
+   page references that were never checked. It has been moved to
+   notes/research-brief-acts-2-42.md as a to-do list. Nothing unverified is
+   rendered: a facet with no sourced content shows as empty and says why. */
+const AWAITING = {
+  "where-and-when": {
+    holds: "The setting. What time of day this happened, what kind of room they were in, and what the gesture meant to the people doing it.",
+    needs: "Curated historical sources. Mishnah and Josephus are public domain and can be quoted at length; modern work gets its position named and its page cited, never its prose reproduced.",
+    tag: "TRACK B · RESEARCH"
+  },
+  "see-it": {
+    holds: "The real places and objects. Sites, artefacts, manuscripts and models \u2014 places and objects, never scenes. Nobody has a photograph of the apostles.",
+    needs: "The image library: around 400 images, each with its licence checked individually and its provenance recorded.",
+    tag: "TRACK A · CURATION"
+  },
+  "the-words": {
+    holds: "The Greek, word by word. What each one means, how often it occurs, and where else it is used.",
+    needs: "Strong\u2019s and MorphGNT ingested. Every count in this facet is checkable by machine, which makes it the cheapest one to make genuinely sourced.",
+    tag: "PHASE 3 · RETRIEVAL"
+  },
+  "where-it-sits": {
+    holds: "Where the verse sits in its book. What comes before it, what it answers, and what it repeats.",
+    needs: "Mostly scripture references, which are already held. Largely buildable today; the grammatical claims need MorphGNT.",
+    tag: "PHASE 3 · RETRIEVAL"
+  },
+  "read-next": {
+    holds: "Where to read next, and why each passage is connected to this one.",
+    needs: "The Treasury of Scripture Knowledge \u2014 about 340,000 cross-references, public domain.",
+    tag: "PHASE 3 · RETRIEVAL"
+  }
 };
 
 const esc = s => String(s == null ? "" : s)
@@ -277,7 +288,7 @@ function render(){
     const real = facet.status === "curated";
     return {
       key, label:m.label, sub:m.sub, c:m.c, facet, real,
-      items: real ? positionItems(facet) : (PLACEHOLDER[key] || []).map(i => ({...i, placeholder:true}))
+      items: real ? positionItems(facet) : []
     };
   });
 
@@ -335,7 +346,7 @@ function buildCards(){
     el.style.borderColor = f.c;
     el.setAttribute("role","button");
     el.setAttribute("tabindex","0");
-    el.setAttribute("aria-label", f.label + (f.real ? "" : " — placeholder"));
+    el.setAttribute("aria-label", f.label + (f.real ? "" : " — not built yet"));
     el.innerHTML = `<div class="hl" style="background:${f.c}"></div>` +
       (f.real ? "" : `<i class="pin">●</i>`) +
       `<b style="color:${f.c}">${esc(f.label)}</b><small>${esc(f.sub)}</small>`;
@@ -413,7 +424,23 @@ scene.addEventListener("pointercancel", () => { drag = false; });
 function drawTray(f){
   const head =
     `<div class="th"><span class="d" style="background:${f.c}"></span><b>${esc(f.label)}</b>` +
-    `<em>${f.items.length} ${f.real ? "POSITIONS" : "PLACEHOLDER"}</em></div>`;
+    `<em>${f.real ? f.items.length + " POSITIONS" : "NOT BUILT YET"}</em></div>`;
+
+  if (!f.real){
+    const a = AWAITING[f.key] || {};
+    tray.innerHTML = head + `
+      <div class="await">
+        <p class="big">Nothing here yet.</p>
+        <p>${esc(a.holds || "")}</p>
+        <div class="row">
+          <p class="lab">WAITING ON</p>
+          <p class="need">${esc(a.needs || "")}</p>
+          <span class="tag">${esc(a.tag || "")}</span>
+        </div>
+      </div>`;
+    tray.scrollTop = 0;
+    return;
+  }
 
   const ask = (f.real && f.facet.question)
     ? `<div class="ask"><p>${esc(f.facet.question)}</p>
@@ -425,7 +452,7 @@ function drawTray(f){
       <button class="it-t" data-i="${i}">
         <span class="${it.gk ? "gk" : ""}">${it.gk ? esc(it.t) : esc(it.t)}</span><i>+</i>
       </button>
-      <div class="it-b">${it.placeholder ? placeholderBody(it) : positionBody(it, i)}</div>
+      <div class="it-b">${positionBody(it, i)}</div>
     </div>`).join("");
 
   tray.querySelectorAll(".it-t").forEach(b =>
@@ -438,12 +465,6 @@ function drawTray(f){
       b.textContent = on ? "Check the source" : "Hide the source";
     }));
   tray.scrollTop = 0;
-}
-
-function placeholderBody(it){
-  return `<span class="who pl"><span></span>PLACEHOLDER · NOT VERIFIED</span>` +
-    it.b.map(p => `<p>${p}</p>`).join("") +
-    `<p class="src">${esc(it.src)} — written for the design mockup and never checked. Do not trust it.</p>`;
 }
 
 function positionBody(it, idx){
