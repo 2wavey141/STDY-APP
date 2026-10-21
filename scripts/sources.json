@@ -1,0 +1,27 @@
+{
+  "_comment": "Pinned source config. Translation IDs are NOT guessable from their common abbreviations: the bare id 'KJV' on this API resolves to a Thai Bible, and 'WEB' is not an id at all. Verified against the live API on 2026-10-20. Do not replace these with guesses.",
+  "api": {
+    "name": "Free Use Bible API",
+    "base": "https://bible.helloao.org/api",
+    "operator": "AO Lab",
+    "docs": "https://bible.helloao.org/docs/",
+    "codebase_license": "MIT",
+    "auth": "none",
+    "rate_limit": "none"
+  },
+  "translations": [
+    { "id": "BSB",     "label": "BSB", "name": "Berean Standard Bible",          "default": true,  "note": "Public domain. Modern and readable; the reading default." },
+    { "id": "eng_kjv", "label": "KJV", "name": "King James (Authorized) Version", "default": false, "note": "Public domain. NB: the bare id 'KJV' returns a Thai Bible." },
+    { "id": "ENGWEBP", "label": "WEB", "name": "World English Bible",             "default": false, "note": "Public domain." },
+    { "id": "eng_asv", "label": "ASV", "name": "American Standard Version (1901)","default": false, "note": "Public domain." }
+  ],
+  "commentaries_available": {
+    "_comment": "Public-domain commentaries this same API serves. Not yet ingested; listed so the next increment does not have to rediscover them.",
+    "ids": ["john-calvin", "matthew-henry", "jamieson-fausset-brown", "john-gill", "adam-clarke", "keil-delitzsch"],
+    "excluded": { "tyndale": "CC BY-SA 4.0 — share-alike. Keep at arm's length like Theographic; see BUILD-PLAN.md." }
+  },
+  "attribution": [
+    "Scripture texts via the Free Use Bible API (AO Lab), bible.helloao.org — public-domain translations.",
+    "Berean Standard Bible — public domain, berean.bible."
+  ]
+}

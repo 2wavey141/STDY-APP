@@ -1,0 +1,103 @@
+{
+  "schema": 1,
+  "slug": "acts-2-42",
+  "type": "verse",
+  "reference": {
+    "display": "Acts 2:42",
+    "book": "ACT",
+    "book_name": "Acts",
+    "chapter": 2,
+    "verse_first": 42,
+    "verse_last": 42
+  },
+  "why_included": "The prototype's centre verse. Devotion, fellowship, breaking of bread, prayer.",
+  "text": {
+    "BSB": "They devoted themselves to the apostles’ teaching and to the fellowship, to the breaking of bread and to prayer.",
+    "eng_kjv": "And they continued stedfastly in the apostles’ doctrine and fellowship, and in breaking of bread, and in prayers.",
+    "ENGWEBP": "They continued steadfastly in the apostles’ teaching and fellowship, in the breaking of bread, and prayer.",
+    "eng_asv": "And they continued stedfastly in the apostles’ teaching and fellowship, in the breaking of bread and the prayers."
+  },
+  "verses": {
+    "BSB": [
+      {
+        "verse": 42,
+        "text": "They devoted themselves to the apostles’ teaching and to the fellowship, to the breaking of bread and to prayer."
+      }
+    ],
+    "eng_kjv": [
+      {
+        "verse": 42,
+        "text": "And they continued stedfastly in the apostles’ doctrine and fellowship, and in breaking of bread, and in prayers."
+      }
+    ],
+    "ENGWEBP": [
+      {
+        "verse": 42,
+        "text": "They continued steadfastly in the apostles’ teaching and fellowship, in the breaking of bread, and prayer."
+      }
+    ],
+    "eng_asv": [
+      {
+        "verse": 42,
+        "text": "And they continued stedfastly in the apostles’ teaching and fellowship, in the breaking of bread and the prayers."
+      }
+    ]
+  },
+  "default_translation": "BSB",
+  "footnotes": [],
+  "facets": {
+    "where-and-when": {
+      "position": 0,
+      "fixed": true,
+      "fillable_by": "human",
+      "sourced": [],
+      "written": null,
+      "status": "empty"
+    },
+    "see-it": {
+      "position": 1,
+      "fixed": true,
+      "fillable_by": "human",
+      "sourced": [],
+      "written": null,
+      "status": "empty"
+    },
+    "still-argued": {
+      "position": 2,
+      "fixed": true,
+      "fillable_by": "human",
+      "sourced": [],
+      "written": null,
+      "status": "empty"
+    },
+    "the-words": {
+      "position": null,
+      "fixed": false,
+      "fillable_by": "retrieval",
+      "sourced": [],
+      "written": null,
+      "status": "empty"
+    },
+    "where-it-sits": {
+      "position": null,
+      "fixed": false,
+      "fillable_by": "retrieval",
+      "sourced": [],
+      "written": null,
+      "status": "empty"
+    },
+    "read-next": {
+      "position": null,
+      "fixed": false,
+      "fillable_by": "retrieval",
+      "sourced": [],
+      "written": null,
+      "status": "empty"
+    }
+  },
+  "attribution": [
+    "Scripture texts via the Free Use Bible API (AO Lab), bible.helloao.org — public-domain translations.",
+    "Berean Standard Bible — public domain, berean.bible."
+  ],
+  "generated": "2026-10-21T02:19:18Z"
+}

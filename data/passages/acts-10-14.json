@@ -1,0 +1,109 @@
+{
+  "schema": 1,
+  "slug": "acts-10-14",
+  "type": "verse",
+  "reference": {
+    "display": "Acts 10:14",
+    "book": "ACT",
+    "book_name": "Acts",
+    "chapter": 10,
+    "verse_first": 14,
+    "verse_last": 14
+  },
+  "why_included": "Peter: 'nothing unclean'. The koinos tension no Bible app surfaces.",
+  "text": {
+    "BSB": "“No, Lord!” Peter answered. “I have never eaten anything impure or unclean.”",
+    "eng_kjv": "But Peter said, Not so, Lord; for I have never eaten any thing that is common or unclean.",
+    "ENGWEBP": "But Peter said, “Not so, Lord; for I have never eaten anything that is common or unclean.”",
+    "eng_asv": "But Peter said, Not so, Lord; for I have never eaten anything that is common and unclean."
+  },
+  "verses": {
+    "BSB": [
+      {
+        "verse": 14,
+        "text": "“No, Lord!” Peter answered. “I have never eaten anything impure or unclean.”"
+      }
+    ],
+    "eng_kjv": [
+      {
+        "verse": 14,
+        "text": "But Peter said, Not so, Lord; for I have never eaten any thing that is common or unclean."
+      }
+    ],
+    "ENGWEBP": [
+      {
+        "verse": 14,
+        "text": "But Peter said, “Not so, Lord; for I have never eaten anything that is common or unclean.”"
+      }
+    ],
+    "eng_asv": [
+      {
+        "verse": 14,
+        "text": "But Peter said, Not so, Lord; for I have never eaten anything that is common and unclean."
+      }
+    ]
+  },
+  "default_translation": "BSB",
+  "footnotes": [
+    {
+      "id": 66,
+      "text": "Literally common; similarly in verses 15 and 28",
+      "verse": 14
+    }
+  ],
+  "facets": {
+    "where-and-when": {
+      "position": 0,
+      "fixed": true,
+      "fillable_by": "human",
+      "sourced": [],
+      "written": null,
+      "status": "empty"
+    },
+    "see-it": {
+      "position": 1,
+      "fixed": true,
+      "fillable_by": "human",
+      "sourced": [],
+      "written": null,
+      "status": "empty"
+    },
+    "still-argued": {
+      "position": 2,
+      "fixed": true,
+      "fillable_by": "human",
+      "sourced": [],
+      "written": null,
+      "status": "empty"
+    },
+    "the-words": {
+      "position": null,
+      "fixed": false,
+      "fillable_by": "retrieval",
+      "sourced": [],
+      "written": null,
+      "status": "empty"
+    },
+    "where-it-sits": {
+      "position": null,
+      "fixed": false,
+      "fillable_by": "retrieval",
+      "sourced": [],
+      "written": null,
+      "status": "empty"
+    },
+    "read-next": {
+      "position": null,
+      "fixed": false,
+      "fillable_by": "retrieval",
+      "sourced": [],
+      "written": null,
+      "status": "empty"
+    }
+  },
+  "attribution": [
+    "Scripture texts via the Free Use Bible API (AO Lab), bible.helloao.org — public-domain translations.",
+    "Berean Standard Bible — public domain, berean.bible."
+  ],
+  "generated": "2026-10-21T02:19:21Z"
+}

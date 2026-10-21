@@ -1,0 +1,103 @@
+{
+  "schema": 1,
+  "slug": "luke-5-10",
+  "type": "verse",
+  "reference": {
+    "display": "Luke 5:10",
+    "book": "LUK",
+    "book_name": "Luke",
+    "chapter": 5,
+    "verse_first": 10,
+    "verse_last": 10
+  },
+  "why_included": "James and John as Simon's koinonoi - his fishing-trade partners. Grounds koinonia in commerce.",
+  "text": {
+    "BSB": "and so were his partners James and John, the sons of Zebedee. “Do not be afraid,” Jesus said to Simon. “From now on you will catch men.”",
+    "eng_kjv": "And so was also James, and John, the sons of Zebedee, which were partners with Simon. And Jesus said unto Simon, Fear not; from henceforth thou shalt catch men.",
+    "ENGWEBP": "and so also were James and John, sons of Zebedee, who were partners with Simon. Jesus said to Simon, “Don’t be afraid. From now on you will be catching people alive.”",
+    "eng_asv": "and so were also James and John, sons of Zebedee, who were partners with Simon. And Jesus said unto Simon, Fear not; from henceforth thou shalt catch men."
+  },
+  "verses": {
+    "BSB": [
+      {
+        "verse": 10,
+        "text": "and so were his partners James and John, the sons of Zebedee. “Do not be afraid,” Jesus said to Simon. “From now on you will catch men.”"
+      }
+    ],
+    "eng_kjv": [
+      {
+        "verse": 10,
+        "text": "And so was also James, and John, the sons of Zebedee, which were partners with Simon. And Jesus said unto Simon, Fear not; from henceforth thou shalt catch men."
+      }
+    ],
+    "ENGWEBP": [
+      {
+        "verse": 10,
+        "text": "and so also were James and John, sons of Zebedee, who were partners with Simon. Jesus said to Simon, “Don’t be afraid. From now on you will be catching people alive.”"
+      }
+    ],
+    "eng_asv": [
+      {
+        "verse": 10,
+        "text": "and so were also James and John, sons of Zebedee, who were partners with Simon. And Jesus said unto Simon, Fear not; from henceforth thou shalt catch men."
+      }
+    ]
+  },
+  "default_translation": "BSB",
+  "footnotes": [],
+  "facets": {
+    "where-and-when": {
+      "position": 0,
+      "fixed": true,
+      "fillable_by": "human",
+      "sourced": [],
+      "written": null,
+      "status": "empty"
+    },
+    "see-it": {
+      "position": 1,
+      "fixed": true,
+      "fillable_by": "human",
+      "sourced": [],
+      "written": null,
+      "status": "empty"
+    },
+    "still-argued": {
+      "position": 2,
+      "fixed": true,
+      "fillable_by": "human",
+      "sourced": [],
+      "written": null,
+      "status": "empty"
+    },
+    "the-words": {
+      "position": null,
+      "fixed": false,
+      "fillable_by": "retrieval",
+      "sourced": [],
+      "written": null,
+      "status": "empty"
+    },
+    "where-it-sits": {
+      "position": null,
+      "fixed": false,
+      "fillable_by": "retrieval",
+      "sourced": [],
+      "written": null,
+      "status": "empty"
+    },
+    "read-next": {
+      "position": null,
+      "fixed": false,
+      "fillable_by": "retrieval",
+      "sourced": [],
+      "written": null,
+      "status": "empty"
+    }
+  },
+  "attribution": [
+    "Scripture texts via the Free Use Bible API (AO Lab), bible.helloao.org — public-domain translations.",
+    "Berean Standard Bible — public domain, berean.bible."
+  ],
+  "generated": "2026-10-21T02:19:19Z"
+}

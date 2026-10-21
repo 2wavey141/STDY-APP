@@ -1,0 +1,103 @@
+{
+  "schema": 1,
+  "slug": "mark-7-2",
+  "type": "verse",
+  "reference": {
+    "display": "Mark 7:2",
+    "book": "MRK",
+    "book_name": "Mark",
+    "chapter": 7,
+    "verse_first": 2,
+    "verse_last": 2
+  },
+  "why_included": "koinos as 'unclean' - the same root as koinonia, opposite valence.",
+  "text": {
+    "BSB": "and they saw some of His disciples eating with hands that were defiled—that is, unwashed.",
+    "eng_kjv": "And when they saw some of his disciples eat bread with defiled, that is to say, with unwashen, hands, they found fault.",
+    "ENGWEBP": "Now when they saw some of his disciples eating bread with defiled, that is unwashed, hands, they found fault.",
+    "eng_asv": "and had seen that some of his disciples ate their bread with defiled, that is, unwashen, hands."
+  },
+  "verses": {
+    "BSB": [
+      {
+        "verse": 2,
+        "text": "and they saw some of His disciples eating with hands that were defiled—that is, unwashed."
+      }
+    ],
+    "eng_kjv": [
+      {
+        "verse": 2,
+        "text": "And when they saw some of his disciples eat bread with defiled, that is to say, with unwashen, hands, they found fault."
+      }
+    ],
+    "ENGWEBP": [
+      {
+        "verse": 2,
+        "text": "Now when they saw some of his disciples eating bread with defiled, that is unwashed, hands, they found fault."
+      }
+    ],
+    "eng_asv": [
+      {
+        "verse": 2,
+        "text": "and had seen that some of his disciples ate their bread with defiled, that is, unwashen, hands."
+      }
+    ]
+  },
+  "default_translation": "BSB",
+  "footnotes": [],
+  "facets": {
+    "where-and-when": {
+      "position": 0,
+      "fixed": true,
+      "fillable_by": "human",
+      "sourced": [],
+      "written": null,
+      "status": "empty"
+    },
+    "see-it": {
+      "position": 1,
+      "fixed": true,
+      "fillable_by": "human",
+      "sourced": [],
+      "written": null,
+      "status": "empty"
+    },
+    "still-argued": {
+      "position": 2,
+      "fixed": true,
+      "fillable_by": "human",
+      "sourced": [],
+      "written": null,
+      "status": "empty"
+    },
+    "the-words": {
+      "position": null,
+      "fixed": false,
+      "fillable_by": "retrieval",
+      "sourced": [],
+      "written": null,
+      "status": "empty"
+    },
+    "where-it-sits": {
+      "position": null,
+      "fixed": false,
+      "fillable_by": "retrieval",
+      "sourced": [],
+      "written": null,
+      "status": "empty"
+    },
+    "read-next": {
+      "position": null,
+      "fixed": false,
+      "fillable_by": "retrieval",
+      "sourced": [],
+      "written": null,
+      "status": "empty"
+    }
+  },
+  "attribution": [
+    "Scripture texts via the Free Use Bible API (AO Lab), bible.helloao.org — public-domain translations.",
+    "Berean Standard Bible — public domain, berean.bible."
+  ],
+  "generated": "2026-10-21T02:19:20Z"
+}

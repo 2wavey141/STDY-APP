@@ -1,0 +1,15 @@
+{
+  "_comment": "The v1 passage set. Target is 25-50, chosen for genuine scholarly dispute as much as familiarity. This starter set is the five passages the project handoff already has real content for: the koinonia thread.",
+  "passages": [
+    { "slug": "acts-2-42",  "book": "ACT", "chapter": 2,  "verse": 42, "type": "verse",
+      "why": "The prototype's centre verse. Devotion, fellowship, breaking of bread, prayer." },
+    { "slug": "luke-5-10",  "book": "LUK", "chapter": 5,  "verse": 10, "type": "verse",
+      "why": "James and John as Simon's koinonoi - his fishing-trade partners. Grounds koinonia in commerce." },
+    { "slug": "phil-1-5",   "book": "PHP", "chapter": 1,  "verse": 5,  "type": "verse",
+      "why": "Partnership in the gospel. Reads differently once the business sense is known." },
+    { "slug": "mark-7-2",   "book": "MRK", "chapter": 7,  "verse": 2,  "type": "verse",
+      "why": "koinos as 'unclean' - the same root as koinonia, opposite valence." },
+    { "slug": "acts-10-14", "book": "ACT", "chapter": 10, "verse": 14, "type": "verse",
+      "why": "Peter: 'nothing unclean'. The koinos tension no Bible app surfaces." }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "generated": "2026-10-21T02:19:21Z",
+  "count": 5,
+  "passages": [
+    {
+      "slug": "acts-2-42",
+      "type": "verse",
+      "reference": "Acts 2:42",
+      "text": "They devoted themselves to the apostles’ teaching and to the fellowship, to the breaking of bread and to prayer.",
+      "facets_filled": 0,
+      "facets_total": 6
+    },
+    {
+      "slug": "luke-5-10",
+      "type": "verse",
+      "reference": "Luke 5:10",
+      "text": "and so were his partners James and John, the sons of Zebedee. “Do not be afraid,” Jesus said to Simon. “From now on you will catch men.”",
+      "facets_filled": 0,
+      "facets_total": 6
+    },
+    {
+      "slug": "phil-1-5",
+      "type": "verse",
+      "reference": "Philippians 1:5",
+      "text": "because of your partnership in the gospel from the first day until now,",
+      "facets_filled": 0,
+      "facets_total": 6
+    },
+    {
+      "slug": "mark-7-2",
+      "type": "verse",
+      "reference": "Mark 7:2",
+      "text": "and they saw some of His disciples eating with hands that were defiled—that is, unwashed.",
+      "facets_filled": 0,
+      "facets_total": 6
+    },
+    {
+      "slug": "acts-10-14",
+      "type": "verse",
+      "reference": "Acts 10:14",
+      "text": "“No, Lord!” Peter answered. “I have never eaten anything impure or unclean.”",
+      "facets_filled": 0,
+      "facets_total": 6
+    }
+  ]
+}

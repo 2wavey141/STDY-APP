@@ -1,0 +1,103 @@
+{
+  "schema": 1,
+  "slug": "phil-1-5",
+  "type": "verse",
+  "reference": {
+    "display": "Philippians 1:5",
+    "book": "PHP",
+    "book_name": "Philippians",
+    "chapter": 1,
+    "verse_first": 5,
+    "verse_last": 5
+  },
+  "why_included": "Partnership in the gospel. Reads differently once the business sense is known.",
+  "text": {
+    "BSB": "because of your partnership in the gospel from the first day until now,",
+    "eng_kjv": "For your fellowship in the gospel from the first day until now;",
+    "ENGWEBP": "for your partnership in furtherance of the Good News from the first day until now;",
+    "eng_asv": "for your fellowship in furtherance of the gospel from the first day until now;"
+  },
+  "verses": {
+    "BSB": [
+      {
+        "verse": 5,
+        "text": "because of your partnership in the gospel from the first day until now,"
+      }
+    ],
+    "eng_kjv": [
+      {
+        "verse": 5,
+        "text": "For your fellowship in the gospel from the first day until now;"
+      }
+    ],
+    "ENGWEBP": [
+      {
+        "verse": 5,
+        "text": "for your partnership in furtherance of the Good News from the first day until now;"
+      }
+    ],
+    "eng_asv": [
+      {
+        "verse": 5,
+        "text": "for your fellowship in furtherance of the gospel from the first day until now;"
+      }
+    ]
+  },
+  "default_translation": "BSB",
+  "footnotes": [],
+  "facets": {
+    "where-and-when": {
+      "position": 0,
+      "fixed": true,
+      "fillable_by": "human",
+      "sourced": [],
+      "written": null,
+      "status": "empty"
+    },
+    "see-it": {
+      "position": 1,
+      "fixed": true,
+      "fillable_by": "human",
+      "sourced": [],
+      "written": null,
+      "status": "empty"
+    },
+    "still-argued": {
+      "position": 2,
+      "fixed": true,
+      "fillable_by": "human",
+      "sourced": [],
+      "written": null,
+      "status": "empty"
+    },
+    "the-words": {
+      "position": null,
+      "fixed": false,
+      "fillable_by": "retrieval",
+      "sourced": [],
+      "written": null,
+      "status": "empty"
+    },
+    "where-it-sits": {
+      "position": null,
+      "fixed": false,
+      "fillable_by": "retrieval",
+      "sourced": [],
+      "written": null,
+      "status": "empty"
+    },
+    "read-next": {
+      "position": null,
+      "fixed": false,
+      "fillable_by": "retrieval",
+      "sourced": [],
+      "written": null,
+      "status": "empty"
+    }
+  },
+  "attribution": [
+    "Scripture texts via the Free Use Bible API (AO Lab), bible.helloao.org — public-domain translations.",
+    "Berean Standard Bible — public domain, berean.bible."
+  ],
+  "generated": "2026-10-21T02:19:20Z"
+}
